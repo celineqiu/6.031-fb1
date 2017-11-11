@@ -78,4 +78,14 @@ class SquareBumper implements Gadget {
     public int hashCode() {
         // TODO
     }
+    
+    @Override
+    public boolean trigger() {
+        // TODO
+    }
+    
+    @Override
+    public void action() {
+        // TODO
+    }
 }

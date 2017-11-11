@@ -31,9 +31,8 @@ public class Game {
             this.interactions.put(triggerObject, actionObject);
         }
     }
-    
-    // another constructor here -- 
 
+    
     // check every frame
     public void checkTriggers() {
         for (Gadget triggerObject: interactions.keySet()) {

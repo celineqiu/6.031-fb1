@@ -21,10 +21,16 @@ public class FlingballParser {
      * @throws UnableToParseException if example expression can't be parsed
      */
     public static void main(final String[] args) throws UnableToParseException {
-        final String input = "board name=Example\n";
+        // Example input for parsing
+        final String input = "board name=Example\n"
+                + "squareBumper name=Square x=0 y=2\n"
+                + "ball name=Ball x=1.8 y=4.5 xVelocity=-3.4 yVelocity=-2.3\n"
+                + "triangleBumper name=Tri x=1 y=1 orientation=270\n"
+                + "absorber name=Abs x=0 y=19 width=20 height=1 \n"
+                + "fire trigger=Tri action=Abs"; 
         System.out.println("INPUT: " + input);
         
-        Game game = FlingballParser.parse(input);
+        FlingballParser.parse(input);
     }
     
     private enum FlingballGrammar {
@@ -108,15 +114,25 @@ public class FlingballParser {
                     
                     switch (child.name()) {
                     case BALL:
-                        balls.add(makeBallAST(child));
+                        {
+                            balls.add(makeBallAST(child));
+                            break;
+                        }
                     case GADGET:
-                        gadgets.add(makeGadgetAST(child));
+                        {
+                            gadgets.add(makeGadgetAST(child));
+                            break;
+                        }
                     case INTERACTION:
                     {
                         // handle interaction between two objects
+                        System.out.println("NAME: "+child.name());
+                        System.out.println("SIZE: "+child.children().size());
+                        System.out.println("FIRST CHILD: "+child.children().get(0).name());
                         String triggerName = child.children().get(0).text();
                         String actionName = child.children().get(1).text(); 
                         interactions.put(triggerName, actionName);
+                        break;
                     }
                     default:
                         break;
@@ -147,30 +163,30 @@ public class FlingballParser {
         switch (specific.name()) {
         case CIRCLE:
         {
-            assert(parseTree.children().size() == 3);
-            String name = parseTree.children().get(0).text();
-            int x = Integer.parseInt(parseTree.children().get(1).text());
-            int y = Integer.parseInt(parseTree.children().get(2).text());
+            assert(specific.children().size() == 3);
+            String name = specific.children().get(0).text();
+            int x = Integer.parseInt(specific.children().get(1).text());
+            int y = Integer.parseInt(specific.children().get(2).text());
             return new CircleBumper(name, x, y);
         }
         
         case SQUARE:
-        {
-            assert(parseTree.children().size() == 3);
-            String name = parseTree.children().get(0).text();
-            int x = Integer.parseInt(parseTree.children().get(1).text());
-            int y = Integer.parseInt(parseTree.children().get(2).text());
+        {   
+            assert(specific.children().size() == 3);
+            String name = specific.children().get(0).text();
+            int x = Integer.parseInt(specific.children().get(1).text());
+            int y = Integer.parseInt(specific.children().get(2).text());
             return new SquareBumper(name, x, y);
         }
         
         case TRIANGLE:
         {
-            assert(parseTree.children().size() == 3 || parseTree.children().size() == 4);
-            String name = parseTree.children().get(0).text();
-            int x = Integer.parseInt(parseTree.children().get(1).text());
-            int y = Integer.parseInt(parseTree.children().get(2).text());
-            if (parseTree.children().size() == 4) {
-                int angle = Integer.parseInt(parseTree.children().get(3).text());
+            assert(specific.children().size() == 3 || specific.children().size() == 4);
+            String name = specific.children().get(0).text();
+            int x = Integer.parseInt(specific.children().get(1).text());
+            int y = Integer.parseInt(specific.children().get(2).text());
+            if (specific.children().size() == 4) {
+                int angle = Integer.parseInt(specific.children().get(3).text());
                 return new TriangleBumper(name, x, y, angle);
             }
             return new TriangleBumper(name, x, y);
@@ -179,12 +195,12 @@ public class FlingballParser {
         
         case ABSORBER:
         {
-            assert(parseTree.children().size() == 5);
-            String name = parseTree.children().get(0).text();
-            int x = Integer.parseInt(parseTree.children().get(1).text());
-            int y = Integer.parseInt(parseTree.children().get(2).text());
-            int width = Integer.parseInt(parseTree.children().get(3).text());
-            int height = Integer.parseInt(parseTree.children().get(4).text());
+            assert(specific.children().size() == 5);
+            String name = specific.children().get(0).text();
+            int x = Integer.parseInt(specific.children().get(1).text());
+            int y = Integer.parseInt(specific.children().get(2).text());
+            int width = Integer.parseInt(specific.children().get(3).text());
+            int height = Integer.parseInt(specific.children().get(4).text());
             return new AbsorberBumper(name, x, y, width, height);
         }
 
