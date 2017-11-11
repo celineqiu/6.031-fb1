@@ -1,4 +1,6 @@
 package flingball;
+import java.awt.Desktop.Action;
+
 import physics.Vect;
 
 public interface Gadget {
@@ -25,6 +27,19 @@ public interface Gadget {
     public Vect velocityAfterCollision(Ball ball);
     
     /**
+     * boolean that indicates if a gadget is on trigger
+     * detailed condition varies according to specific gadget types
+     * @return boolean that indicates if a gadget is on trigger
+     */
+    public boolean trigger();
+    
+    /**
+     * action a gadget takes after specific trigger is on
+     */
+    public void action();
+    
+    
+    /**
      * @return a human-readable representation of this gadget.
      * Formatted such that the name, position, and orientation (if applicable) are returned.
      */
@@ -46,4 +61,9 @@ public interface Gadget {
      */
     @Override
     public int hashCode();
+    
+    /**
+     * @return the name of the gadget
+     */
+    public String name();
 }

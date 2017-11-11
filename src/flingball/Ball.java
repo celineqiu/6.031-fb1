@@ -4,6 +4,7 @@ import physics.Circle;
 import physics.Vect;
 
 class Ball {
+    private String name;
     private Circle ball;
     private Vect velocity;
     
@@ -24,7 +25,8 @@ class Ball {
      * @param xVelocity x value of the ball velocity
      * @param yVelocity y value of the ball velocity
      */
-    public Ball(double x, double y, double xVelocity, double yVelocity) {
+    public Ball(String name, double x, double y, double xVelocity, double yVelocity) {
+        this.name = name;
         this.ball = new Circle(x, y, 0.25);
         this.velocity = new Vect(xVelocity, yVelocity);
     }
@@ -98,5 +100,9 @@ class Ball {
      */
     public void friction(double mu, double mu2) {
         // TODO
+    }
+    
+    public String name() {
+        return name;
     }
 }
