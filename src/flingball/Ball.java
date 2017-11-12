@@ -39,6 +39,14 @@ class Ball {
     }
     
     /**
+     * Get the name of this Ball.
+     * @return the name of this Ball.
+     */
+    public String name() {
+        return this.name;
+    }
+    
+    /**
      * Get the coordinate of the center of the ball.
      * @return coordinate of the center of the ball
      */
@@ -101,9 +109,5 @@ class Ball {
      */
     public void friction(double friction1, double friction2) {
         // TODO
-    }
-    
-    public String name() {
-        return name;
     }
 }

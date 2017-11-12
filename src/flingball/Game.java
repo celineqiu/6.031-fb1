@@ -15,6 +15,17 @@ public class Game {
     private final Map<String, Gadget> gadgets = new HashMap<>();
     private final Map<Gadget, Gadget> interactions = new HashMap<>();
     
+    // Abstract Function:
+    //   AF(name, gravity, friction1, friction2, balls, gadgets, interactions)
+    //     = a Flingball Game named name with gravity, friction1 and friction2 constants, 
+    //       balls and gadgets in the playing area
+    //       and trigger / action event interactions 
+    // Rep Invariant:
+    //   keys and values in interactions must be in gadgets
+    // Safety from rep exposure:
+    //   fields are private and final
+    //   defensive copies of inputs are stored
+    
     /**
      * Make a Game object for Flingball.
      * @param name of the game
@@ -45,7 +56,14 @@ public class Game {
             this.interactions.put(triggerObject, actionObject);
         }
     }
-
+    
+    /**
+     * Get the name of this Game.
+     * @return name of this Game
+     */
+    public String name() {
+        return this.name;
+    }
     
     /**
      * Check for triggers at every frame of the Flingball Game.
