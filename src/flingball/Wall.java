@@ -28,6 +28,11 @@ class Wall implements Gadget {
         // TODO
     }
     
+    @Override
+    public String name() {
+        // TODO
+    }
+    
     /**
      * Calculate the time until the ball collides with this gadget.
      * @param ball in the playing area 

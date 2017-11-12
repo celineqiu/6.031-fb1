@@ -4,7 +4,7 @@ import physics.Circle;
 import physics.LineSegment;
 import physics.Vect;
 
-class AbsorberBumper implements Gadget {
+class Absorber implements Gadget {
     private final String name;
     private final int x, y, width, height;
     private final LineSegment bottom, top, left, right;
@@ -28,7 +28,7 @@ class AbsorberBumper implements Gadget {
     // Safety from rep exposure:
     //   all fields private and final
     
-    public AbsorberBumper(String name, int x, int y, int width, int height) {
+    public Absorber(String name, int x, int y, int width, int height) {
         this.name = name;
         this.x = x;
         this.y = y;
@@ -48,6 +48,11 @@ class AbsorberBumper implements Gadget {
      * Check that the rep invariant is satisfied.
      */
     private void checkRep() {
+        // TODO
+    }
+    
+    @Override
+    public String name() {
         // TODO
     }
     

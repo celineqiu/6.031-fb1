@@ -81,24 +81,25 @@ class Ball {
     
     /**
      * Update the ball's position and velocity as affected by a given gravity value in L/sec2.
-     * @param gravityValue in L/sec2
+     * @param gravity value in L/sec2
      */
-    public void gravity(double gravityValue) {
+    public void gravity(double gravity) {
         // TODO
     }
     
     /**
      * Update the ball's position and velocity as affected by the default frictional constants
-     * mu = 0.025/sec and mu2 = 0.025/L.
+     * friction1 (mu) = 0.025/sec and friction2 (mu2) = 0.025/L.
      */
     public void friction() {
         // TODO
     }
     
     /**
-     * Update the ball's position and velocity as affected by the given frictional constants mu and mu2.
+     * Update the ball's position and velocity as affected by the given 
+     * frictional constants friction1 and friction2 (mu and mu2).
      */
-    public void friction(double mu, double mu2) {
+    public void friction(double friction1, double friction2) {
         // TODO
     }
     

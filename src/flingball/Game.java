@@ -7,24 +7,38 @@ import java.util.Map;
 
 public class Game {
 
-    private float friction1;
-    private float friction2;
-    private String name;
-    private float gravity = 25.0f;
-    private Map<String, Ball> balls = new HashMap<>();
-    private Map<String, Gadget> gadgets = new HashMap<>();
-    private Map<Gadget,Gadget> interactions = new HashMap<>();
+    private final String name;
+    private final float gravity;
+    private final float friction1;
+    private final float friction2;
+    private final Map<String, Ball> balls = new HashMap<>();
+    private final Map<String, Gadget> gadgets = new HashMap<>();
+    private final Map<Gadget, Gadget> interactions = new HashMap<>();
     
-    
-    
+    /**
+     * Make a Game object for Flingball.
+     * @param name of the game
+     * @param gravity value. default value is 25.0f
+     * @param friction1 value. default value is 0.025f
+     * @param friction2 value. default value is 0.025f
+     * @param balls in the Flingball game playing area
+     * @param gadgets in the Flingball game playing area
+     * @param interactions specifying trigger and action events between gadgets
+     */
     public Game(String name, Float gravity, Float friction1, Float friction2, List<Ball> balls, List<Gadget> gadgets, Map<String,String> interactions) {
         this.name = name;
+        this.gravity = gravity;
+        this.friction1 = friction1;
+        this.friction2 = friction2;
+        
         for (Ball ball : balls) {
             this.balls.put(ball.name(), ball);
         }
+        
         for (Gadget gadget : gadgets) {
             this.gadgets.put(gadget.name(), gadget);
         }
+        
         for (String triggerName: interactions.keySet()) {
             Gadget triggerObject = this.gadgets.get(triggerName);
             Gadget actionObject = this.gadgets.get(interactions.get(triggerName));
@@ -33,7 +47,9 @@ public class Game {
     }
 
     
-    // check every frame
+    /**
+     * Check for triggers at every frame of the Flingball Game.
+     */
     public void checkTriggers() {
         for (Gadget triggerObject: interactions.keySet()) {
             if (triggerObject.trigger()) {
@@ -43,7 +59,20 @@ public class Game {
         }
     }
     
+    @Override
+    public void toString() {
+        // TODO
+    }
     
+    @Override
+    public void equals() {
+        // TODO
+    }
+    
+    @Override
+    public void hashCode() {
+        // TODO
+    }
     
     
 }

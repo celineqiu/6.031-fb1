@@ -12,6 +12,10 @@ public interface Gadget {
     //          + Absorber(name: String, x: int, y: int, width: int, height: int)
     //          + Wall(startX: int, startY: int, endX: int, endY: int)
     
+    /**
+     * @return the name of the gadget
+     */
+    public String name();
     
     /**
      * Calculate the time until the ball collides with this gadget.
@@ -61,9 +65,4 @@ public interface Gadget {
      */
     @Override
     public int hashCode();
-    
-    /**
-     * @return the name of the gadget
-     */
-    public String name();
 }
