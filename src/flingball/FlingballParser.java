@@ -22,8 +22,10 @@ public class FlingballParser {
      */
     public static void main(final String[] args) throws UnableToParseException {
         // Example input for parsing
-        final String input = "board name=Example\n"
+        final String input = "#comment in the first line\n"
+                + "board name=Example\n"
                 + "squareBumper name=Square x=0 y=2\n"
+                + "#this is comment\n"
                 + "ball name=Ball x=1.8 y=4.5 xVelocity=-3.4 yVelocity=-2.3\n"
                 + "triangleBumper name=Tri x=1 y=1 orientation=270\n"
                 + "absorber name=Abs x=0 y=19 width=20 height=1 \n"
@@ -34,7 +36,7 @@ public class FlingballParser {
     }
     
     private enum FlingballGrammar {
-        GAME, BOARD, GADGET, SQUARE, CIRCLE, TRIANGLE, ABSORBER, INTERACTION, BALL, INTEGER, NAME, FLOAT, ANGLE, WHITESPACE
+        GAME, BOARD, GADGET, SQUARE, CIRCLE, TRIANGLE, ABSORBER, INTERACTION, BALL, INTEGER, NAME, FLOAT, ANGLE, COMMENT, WHITESPACE
     }
 
     private static Parser<FlingballGrammar> parser = makeParser();
@@ -89,13 +91,17 @@ public class FlingballParser {
         switch (parseTree.name()) {
         case GAME: // game ::= board definition*;
             {
+                final List<ParseTree<FlingballGrammar>> children = parseTree.children();
+                int currentIndex = 0;
+                while (children.get(currentIndex).name() != FlingballGrammar.BOARD) {
+                    currentIndex++;
+                }
+                
                 final float defaultGravity = 25.0f;
                 final float defaultFriction = 0.025f;
-                
-                final List<ParseTree<FlingballGrammar>> children = parseTree.children();
-                
+
                 // extract basic information from board
-                final ParseTree<FlingballGrammar> board = children.get(0);
+                final ParseTree<FlingballGrammar> board = children.get(currentIndex);
                 assert(board.name() == FlingballGrammar.BOARD);
                 
                 final List<ParseTree<FlingballGrammar>> information = board.children();
@@ -109,10 +115,12 @@ public class FlingballParser {
                 final List<Gadget> gadgets = new ArrayList<>();
                 final Map<String, String> interactions = new HashMap<>();
                 
-                for (int i = 1; i < children.size(); i++) {
+                for (int i = currentIndex + 1; i < children.size(); i++) {
                     ParseTree<FlingballGrammar> child = children.get(i);
                     
                     switch (child.name()) {
+                    case COMMENT:
+                        break;
                     case BALL:
                         {
                             balls.add(makeBallAST(child));

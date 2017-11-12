@@ -3,7 +3,7 @@
  */
 
 @skip whitespace {
-	game ::= board (ball | gadget | interaction)*;
+	game ::= COMMENT* board (COMMENT | ball | gadget | interaction)*;
 	board::= 'board' 'name''=' NAME ('gravity''=' FLOAT)? ('friction1=' FLOAT)? ('friction2=' FLOAT)?;
 	gadget::= circle | triangle | absorber | square;
 	square::= 'squareBumper' 'name''='NAME 'x''='INTEGER 'y''='INTEGER;
@@ -12,6 +12,7 @@
 	absorber::= 'absorber' 'name''='NAME 'x''='INTEGER 'y''='INTEGER 'width''='INTEGER 'height''='INTEGER;
 	interaction::= 'fire' 'trigger''='NAME 'action''='NAME;
 	ball::= 'ball name='NAME 'x='FLOAT 'y='FLOAT 'xVelocity='FLOAT 'yVelocity='FLOAT;
+	
 
 }
 whitespace ::= [ \t\n\r]+;
@@ -19,4 +20,4 @@ INTEGER ::= [0-9]+;
 NAME ::= [A-Za-z_][A-Za-z_0-9]*;
 FLOAT ::= '-'?([0-9]+.[0-9]*|.?[0-9]+);
 ANGLE ::= '0'|'90'|'180'|'270';
-
+COMMENT::= '#'[^\n]*'\n';
