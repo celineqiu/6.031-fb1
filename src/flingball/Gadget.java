@@ -3,6 +3,9 @@ import java.awt.Desktop.Action;
 
 import physics.Vect;
 
+/**
+ * Represents a Gadget in a Flingball game.
+ */
 public interface Gadget {
     
     // Datatype definition:

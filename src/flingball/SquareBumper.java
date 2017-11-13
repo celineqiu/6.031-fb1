@@ -3,6 +3,9 @@ import physics.Circle;
 import physics.LineSegment;
 import physics.Vect;
 
+/**
+ * Represents a Square Bumper Gadget in a Flingball game.
+ */
 class SquareBumper implements Gadget {
     private final String name;
     private final int x, y;

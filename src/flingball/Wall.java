@@ -3,6 +3,9 @@ import physics.Circle;
 import physics.LineSegment;
 import physics.Vect;
 
+/**
+ * Represents a Wall Gadget in a Flingball game.
+ */
 class Wall implements Gadget {
     private final LineSegment line;
     private final Circle startCorner;

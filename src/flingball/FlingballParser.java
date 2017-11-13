@@ -12,7 +12,9 @@ import edu.mit.eecs.parserlib.Parser;
 import edu.mit.eecs.parserlib.UnableToParseException;
 import edu.mit.eecs.parserlib.Visualizer;
 
-
+/**
+ * Flingball Parser that parses a game file into a Flingball game.
+ */
 public class FlingballParser {
     /**
      * Main method. Parses and then reprints an example expression.
@@ -209,7 +211,7 @@ public class FlingballParser {
             int y = Integer.parseInt(specific.children().get(2).text());
             int width = Integer.parseInt(specific.children().get(3).text());
             int height = Integer.parseInt(specific.children().get(4).text());
-            return new AbsorberBumper(name, x, y, width, height);
+            return new Absorber(name, x, y, width, height);
         }
 
         default:

@@ -4,6 +4,9 @@ import physics.Circle;
 import physics.LineSegment;
 import physics.Vect;
 
+/**
+ * Represents an Absorber Gadget in a Flingball game.
+ */
 class Absorber implements Gadget {
     private final String name;
     private final int x, y, width, height;

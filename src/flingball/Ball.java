@@ -3,6 +3,9 @@ package flingball;
 import physics.Circle;
 import physics.Vect;
 
+/**
+ * Represents a Ball in a Flingball game.
+ */
 class Ball {
     private String name;
     private Circle ball;

@@ -1,7 +1,7 @@
 package flingball;
 
 /**
- * Console interface to the flingball expression system.
+ * Console interface to the Flingball expression system.
  */
 public class Flingball {
     

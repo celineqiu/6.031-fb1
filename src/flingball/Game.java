@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A Flingball game containing balls and gadgets and characterized by gravity, friction constants, 
+ * and trigger and action events.
+ */
 public class Game {
 
     private final String name;

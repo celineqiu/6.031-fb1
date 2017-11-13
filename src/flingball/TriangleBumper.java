@@ -4,6 +4,9 @@ import physics.Circle;
 import physics.LineSegment;
 import physics.Vect;
 
+/**
+ * Represents a Triangle Bumper Gadget in a Flingball game.
+ */
 class TriangleBumper implements Gadget {
     private final String name;
     private final int x, y, orientation;

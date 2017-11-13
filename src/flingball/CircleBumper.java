@@ -3,6 +3,9 @@ package flingball;
 import physics.Circle;
 import physics.Vect;
 
+/**
+ * Represents a Circle Bumper Gadget in a Flingball game.
+ */
 class CircleBumper implements Gadget {
     private final String name;
     private final int x, y;
