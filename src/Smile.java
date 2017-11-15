@@ -29,8 +29,8 @@ public class Smile {
      */
     public static void main(String[] args) {
         // Two approaches to animation.  Uncomment the one to try:
-        //animationApproach1();
-        animationApproach2();
+        animationApproach1();
+        //animationApproach2();
     }
     
 
@@ -38,7 +38,7 @@ public class Smile {
     //    - use a loop that repeatedly calls a drawing function, then sleeps
     //    - all work happens in the main thread
     //    - the loop *must* call Thread.sleep() or Thread.yield() occasionally or the animation will use 100% CPU
-    private static void animationApproach1() {
+    private  void animationApproach1() {
         final JFrame window = new JFrame("Smile 1");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
@@ -64,7 +64,7 @@ public class Smile {
     // Animation approach #2:
     //    - use a UI timer and paintComponent()/repaint()
     //    - all work happens in the Java UI thread
-    private static void animationApproach2() {
+    private void animationApproach2() {
         final JFrame window = new JFrame("Smile 2");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
@@ -100,14 +100,14 @@ public class Smile {
     private static final int SMILE_STROKE_WIDTH = 3;
 
     
-    private static double smileX;
-    private static double smileY;
-    private static long timeOfLastDraw;
+    private double smileX;
+    private double smileY;
+    private long timeOfLastDraw;
     
     /*
      * Initialize the smile animation.
      */
-    private static void initializeSmile() {
+    private void initializeSmile() {
         smileX = 0;
         smileY = 0;
         timeOfLastDraw = System.currentTimeMillis();
@@ -118,7 +118,7 @@ public class Smile {
      * @param g graphics for the drawing buffer for the window.  Modifies this graphics by drawing a smile on it, at a 
      * position determined by the current clock time.
      */
-    private static void drawSmile(final Graphics g) {
+    private void drawSmile(final Graphics g) {
         Graphics2D g2 = (Graphics2D) g;  // every Graphics object is also a Graphics2D, which is a stronger spec
         
         // fill the background to erase everything

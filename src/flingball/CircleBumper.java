@@ -1,5 +1,8 @@
 package flingball;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+
 import physics.Circle;
 import physics.Vect;
 
@@ -81,5 +84,21 @@ class CircleBumper implements Gadget {
     @Override
     public void action() {
         // TODO
+    }
+    
+    @Override
+    public void drawIcon(Graphics2D g, final int scaler) {
+        
+        if (trigger()) {
+            g.setColor(Color.YELLOW);
+        }else {
+            g.setColor(Color.RED); 
+        }
+        
+        int displayX = (int) Math.round(x*scaler);
+        int displayY = (int) Math.round(y*scaler);
+        int displayRadius = (int) Math.round(circle.getRadius()*scaler);
+        
+        g.fillRect(displayX, displayY, displayRadius, displayRadius);
     }
 }

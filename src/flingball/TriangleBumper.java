@@ -1,5 +1,8 @@
 package flingball;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+
 import physics.Circle;
 import physics.LineSegment;
 import physics.Vect;
@@ -106,4 +109,33 @@ class TriangleBumper implements Gadget {
         // TODO
     }
 
+    @Override
+    public void drawIcon(Graphics2D g, final int scaler) {
+        final int width = 1;
+        final int height = 1;
+        
+        if (trigger()) {
+            g.setColor(Color.YELLOW);
+        }else {
+            g.setColor(Color.ORANGE); 
+        }
+        
+        final int[] xValues = new int[] {
+                (int) Math.round(cornerA.getCenter().x()*scaler),
+                (int) Math.round(cornerB.getCenter().x()*scaler),
+                (int) Math.round(rightAngleCorner.getCenter().x()*scaler)                   
+        };
+        
+        final int[] yValues = new int[] {
+                (int) Math.round(cornerA.getCenter().x()*scaler),
+                (int) Math.round(cornerB.getCenter().x()*scaler),
+                (int) Math.round(rightAngleCorner.getCenter().x()*scaler)                   
+        };
+        
+        final int nPoints = 3;
+        
+        g.fillPolygon(xValues, yValues, nPoints);
+    }
+    
+    
 }

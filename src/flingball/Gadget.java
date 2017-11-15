@@ -1,5 +1,5 @@
 package flingball;
-import java.awt.Desktop.Action;
+import java.awt.Graphics2D;
 
 import physics.Vect;
 
@@ -45,6 +45,15 @@ public interface Gadget {
      */
     public void action();
     
+    /**
+     * draw corresponding icon on the given graphics object with
+     * position and dimension scaled.
+     * @param g Graphics to be drawn on, mutated
+     * @param scaler coefficient that helps turning Gadget size into values;
+     */
+    public void drawIcon(Graphics2D g, int scaler);
+    
+    
     
     /**
      * @return a human-readable representation of this gadget.
@@ -68,4 +77,6 @@ public interface Gadget {
      */
     @Override
     public int hashCode();
+    
+    
 }

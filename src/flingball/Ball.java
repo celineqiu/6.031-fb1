@@ -1,5 +1,8 @@
 package flingball;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+
 import physics.Circle;
 import physics.Vect;
 
@@ -112,5 +115,15 @@ class Ball {
      */
     public void friction(double friction1, double friction2) {
         // TODO
+    }
+    
+    public void drawIcon(final Graphics2D g, final int scaler) {
+        g.setColor(Color.BLUE);
+        int displayX = (int) Math.round(ball.getCenter().x()*scaler);
+        int displayY = (int) Math.round(ball.getCenter().y()*scaler);
+        int displayRadius = (int) Math.round(ball.getRadius()*scaler);
+        
+        g.fillOval(displayX, displayY, displayRadius, displayRadius);
+        
     }
 }

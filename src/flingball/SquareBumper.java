@@ -1,4 +1,7 @@
 package flingball;
+import java.awt.Color;
+import java.awt.Graphics2D;
+
 import physics.Circle;
 import physics.LineSegment;
 import physics.Vect;
@@ -95,5 +98,24 @@ class SquareBumper implements Gadget {
     @Override
     public void action() {
         // TODO
+    }
+    
+    @Override
+    public void drawIcon(Graphics2D g, final int scaler) {
+        final int width = 1;
+        final int height = 1;
+        
+        if (trigger()) {
+            g.setColor(Color.YELLOW);
+        }else {
+            g.setColor(Color.RED); 
+        }
+        
+        int displayX = (int) Math.round(x*scaler);
+        int displayY = (int) Math.round(y*scaler);
+        int displayWidth = (int) Math.round(width*scaler);
+        int displayHeight = (int) Math.round(height*scaler);
+        
+        g.fillRect(displayX, displayY, displayWidth, displayHeight);
     }
 }
