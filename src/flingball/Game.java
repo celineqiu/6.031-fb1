@@ -1,13 +1,9 @@
 package flingball;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import physics.Circle;
-import physics.LineSegment;
-import physics.Physics;
 import physics.Vect;
 
 /**
@@ -30,6 +26,7 @@ public class Game {
     //       balls and gadgets in the playing area
     //       and trigger / action event interactions 
     // Rep Invariant:
+    //   String name of keys in balls and gadgets must match the name of its value object
     //   keys and values in interactions must be in gadgets
     // Safety from rep exposure:
     //   fields are private and final
@@ -39,6 +36,14 @@ public class Game {
      * Check that the rep invariant is true.
      */
     private void checkRep() {
+        // String name of keys in balls and gadgets must match the name of its value object
+        for (String ballName : balls.keySet()) {
+            ballName.equals(balls.get(ballName).name());
+        }
+        for (String gadgetName : gadgets.keySet()) {
+            gadgetName.equals(gadgets.get(gadgetName).name());
+        }
+            
         // keys and values in interactions must be in gadgets
         for (Gadget trigger : interactions.keySet()) {
             assert gadgets.values().contains(trigger): "Trigger gadgets must be in gadgets map or be ";
@@ -68,22 +73,22 @@ public class Game {
         }
         
         // create walls
-        Wall top = new Wall(0, 0, 20, 0);
-        Wall left = new Wall(0, 20, 0, 0);
-        Wall right = new Wall(20, 0, 20, 20);
-        Wall bottom = new Wall(20, 20, 0, 20);
+        Wall top = new Wall("top", 0, 0, 20, 0);
+        Wall left = new Wall("left", 0, 20, 0, 0);
+        Wall right = new Wall("right", 20, 0, 20, 20);
+        Wall bottom = new Wall("bottom", 20, 20, 0, 20);
         gadgets.add(top);
         gadgets.add(left);
         gadgets.add(right);
         gadgets.add(bottom);
         
         for (Gadget gadget : gadgets) {
-            // TODO? make a defensive copy of the gadget before storing it to prevent rep exposure
+            // TODO make a defensive copy of the gadget before storing it to prevent rep exposure
             this.gadgets.put(gadget.name(), gadget.copy());
         }
         
         for (String triggerName: interactions.keySet()) {
-            // TODO? make a defensive copy of the interactions before storing it to prevent rep exposure
+            // TODO make a defensive copy of the interactions before storing it to prevent rep exposure
             Gadget triggerObject = this.gadgets.get(triggerName);
             Gadget actionObject = this.gadgets.get(interactions.get(triggerName));
             this.interactions.put(triggerObject.copy(), actionObject.copy());
