@@ -11,6 +11,7 @@ import edu.mit.eecs.parserlib.ParseTree;
 import edu.mit.eecs.parserlib.Parser;
 import edu.mit.eecs.parserlib.UnableToParseException;
 import edu.mit.eecs.parserlib.Visualizer;
+import memely.ExpressionParser.ExpressionGrammar;
 
 /**
  * Flingball Parser that parses a game file into a Flingball game.
@@ -24,14 +25,33 @@ public class FlingballParser {
      */
     public static void main(final String[] args) throws UnableToParseException {
         // Example input for parsing
-        final String input = "#comment in the first line\n"
-                + "board name=Example\n"
-                + "squareBumper name=Square x=0 y=2\n"
-                + "#this is comment\n"
-                + "ball name=Ball x=1.8 y=4.5 xVelocity=-3.4 yVelocity=-2.3\n"
-                + "triangleBumper name=Tri x=1 y=1 orientation=270\n"
-                + "absorber name=Abs x=0 y=19 width=20 height=1 \n"
-                + "fire trigger=Tri action=Abs"; 
+//        final String input = "#comment in the first line\n"
+//                + "board name=Example\n"
+//                + "squareBumper name=Square x=0 y=2\n"
+//                + "#this is comment\n"
+//                + "ball name=Ball x=1.8 y=4.5 xVelocity=-3.4 yVelocity=-2.3\n"
+//                + "triangleBumper name=Tri x=1 y=1 orientation=270\n"
+//                + "absorber name=Abs x=0 y=19 width=20 height=1 \n"
+//                + "fire trigger=Tri action=Abs"; 
+        // default.fb
+        final String input = "board name=Default gravity = 25.0\n" + 
+                "\n" + 
+                "# define a ball\n" + 
+                "ball name=BallA x=1.25 y=1.25 xVelocity=0 yVelocity=0\n" + 
+                "\n" + 
+                "# define a series of square bumpers\n" + 
+                "squareBumper name=SquareA x=0 y=17\n" + 
+                "squareBumper name=SquareB x=1 y=17\n" + 
+                "squareBumper name=SquareC x=2 y=17\n" + 
+                "\n" + 
+                "# define a series of circle bumpers\n" + 
+                "circleBumper name=CircleA x=1 y=10\n" + 
+                "circleBumper name=CircleB x=7 y=18\n" + 
+                "circleBumper name=CircleC x=8 y=18\n" + 
+                "circleBumper name=CircleD x=9 y=18\n" + 
+                "\n" + 
+                "# define a triangle bumper\n" + 
+                "triangleBumper name=Tri x=12 y=15 orientation=180";
         System.out.println("INPUT: " + input);
         
         FlingballParser.parse(input);
@@ -67,6 +87,7 @@ public class FlingballParser {
 
     }
     
+    
     /**
      * Parse a string into an expression.
      * @param string string to parse
@@ -79,7 +100,8 @@ public class FlingballParser {
 
         Visualizer.showInBrowser(parseTree);
 
-        final Game game = makeGameAST(parseTree);
+        //final Game game = makeGameAST(parseTree);
+        final Game game = new Game("a", 25f, 0.025f, 0.025f,new ArrayList<Ball>(), new ArrayList<Gadget>(), new HashMap<>());
         System.out.println("AST " + game);
         return game;
     }
