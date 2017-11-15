@@ -64,19 +64,29 @@ public class Game {
         
         for (Ball ball : balls) {
             // TODO? make a defensive copy of the ball before storing it to prevent rep exposure
-            this.balls.put(ball.name(), ball);
+            this.balls.put(ball.name(), ball.copy());
         }
+        
+        // create walls
+        Wall top = new Wall(0, 0, 20, 0);
+        Wall left = new Wall(0, 20, 0, 0);
+        Wall right = new Wall(20, 0, 20, 20);
+        Wall bottom = new Wall(20, 20, 0, 20);
+        gadgets.add(top);
+        gadgets.add(left);
+        gadgets.add(right);
+        gadgets.add(bottom);
         
         for (Gadget gadget : gadgets) {
             // TODO? make a defensive copy of the gadget before storing it to prevent rep exposure
-            this.gadgets.put(gadget.name(), gadget);
+            this.gadgets.put(gadget.name(), gadget.copy());
         }
         
         for (String triggerName: interactions.keySet()) {
             // TODO? make a defensive copy of the interactions before storing it to prevent rep exposure
             Gadget triggerObject = this.gadgets.get(triggerName);
             Gadget actionObject = this.gadgets.get(interactions.get(triggerName));
-            this.interactions.put(triggerObject, actionObject);
+            this.interactions.put(triggerObject.copy(), actionObject.copy());
         }
         
         checkRep();
