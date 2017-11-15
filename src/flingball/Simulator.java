@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -67,15 +68,12 @@ public class Simulator {
         // fill the background to erase everything
         g2.setColor(Color.black);
         g2.fill(new Rectangle2D.Double(0, 0, DRAWING_AREA_SIZE_IN_PIXELS, DRAWING_AREA_SIZE_IN_PIXELS));
-
-        final List<Ball> balls = this.game.ballList();
-        final List<Gadget> gadgets = this.game.gadgetList();
         
-        for (Ball ball : balls) {
+        for (Ball ball : this.game.balls().values()) {
             ball.drawIcon(g2, PIXELS_PER_L);
         }
         
-        for (Gadget gadget : gadgets) {
+        for (Gadget gadget : this.game.gadgets().values()) {
             gadget.drawIcon(g2, PIXELS_PER_L);
         }
         

@@ -100,8 +100,9 @@ public class FlingballParser {
 
         Visualizer.showInBrowser(parseTree);
 
-        //final Game game = makeGameAST(parseTree);
-        final Game game = new Game("a", 25f, 0.025f, 0.025f,new ArrayList<Ball>(), new ArrayList<Gadget>(), new HashMap<>());
+        final Game game = makeGameAST(parseTree);
+        // Return empty game for testing perpose
+        //final Game game = new Game("a", 25f, 0.025f, 0.025f,new ArrayList<Ball>(), new ArrayList<Gadget>(), new HashMap<>());
         System.out.println("AST " + game);
         return game;
     }
