@@ -74,22 +74,22 @@ class SquareBumper implements Gadget {
         for (LineSegment edge : edges) {
             Vect p1 = edge.p1();
             Vect p2 = edge.p2();
-            assert(p1.x() >= 0 && p1.x() <= 20);
-            assert(p1.y() >= 0 && p1.y() <= 20);
-            assert(p2.x() >= 0 && p2.x() <= 20);
-            assert(p2.y() >= 0 && p2.y() <= 20);
+            assert(p1.x() >= 0 && p1.x() <= 20) : "edge point p1.x out of range, value is "+ p1.x();
+            assert(p1.y() >= 0 && p1.y() <= 20) : "edge point p1.y out of range, value is "+ p1.y();
+            assert(p2.x() >= 0 && p2.x() <= 20) : "edge point p2.x out of range, value is "+ p2.x();
+            assert(p2.y() >= 0 && p2.y() <= 20) : "edge point p2.y out of range, value is "+ p2.y();
         }
         
         for (Circle corner : corners) {
             Vect center = corner.getCenter();
-            assert(center.x() >= 0 && center.x() <= 20);
-            assert(center.y() >= 0 && center.y() <= 20);
+            assert(center.x() >= 0 && center.x() <= 20) : "center of corner out of bound (x), value is " + center.x();
+            assert(center.y() >= 0 && center.y() <= 20) : "center of corner out of bound (y), value is " + center.y();
         }
         
-        assert(bottomLeft.getCenter().equals(bottom.p1()) && bottomRight.getCenter().equals(bottom.p2()));
-        assert(topLeft.getCenter().equals(top.p1()) && topRight.getCenter().equals(top.p2()));
-        assert(topLeft.getCenter().equals(left.p1()) && bottomLeft.getCenter().equals(left.p2()));
-        assert(topRight.getCenter().equals(right.p1()) && bottomRight.getCenter().equals(right.p2()));
+        assert(bottomRight.getCenter().equals(bottom.p1()) && bottomLeft.getCenter().equals(bottom.p2())) : "edge point and corner not consistent, bottom";
+        assert(topLeft.getCenter().equals(top.p1()) && topRight.getCenter().equals(top.p2())) : "edge point and corner not consistent, top";
+        assert(bottomLeft.getCenter().equals(left.p1()) && topLeft.getCenter().equals(left.p2())) : "edge point and corner not consistent, left";
+        assert(topRight.getCenter().equals(right.p1()) && bottomRight.getCenter().equals(right.p2())) : "edge point and corner not consistent, right";
         
     }
        

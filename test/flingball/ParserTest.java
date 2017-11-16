@@ -1,11 +1,15 @@
 package flingball;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import org.junit.Test;
 
@@ -56,17 +60,26 @@ public class ParserTest {
         gadgets.add(new CircleBumper("CircleC", 8, 18));
         gadgets.add(new CircleBumper("CircleD", 9, 18));
         gadgets.add(new TriangleBumper("Tri", 12, 15, 180));
-        gadgets.add(new Wall(0, 0, 20, 0));
-        gadgets.add(new Wall(0, 0, 0, 20));
-        gadgets.add(new Wall(0, 20, 20, 20));
-        gadgets.add(new Wall(0, 20, 20, 0));
+        Wall top = new Wall("top", 0, 0, 20, 0);
+        Wall left = new Wall("left", 0, 20, 0, 0);
+        Wall right = new Wall("right", 20, 0, 20, 20);
+        Wall bottom = new Wall("bottom", 20, 20, 0, 20);
+        gadgets.add(top);
+        gadgets.add(left);
+        gadgets.add(right);
+        gadgets.add(bottom);
         
         Map<String,String> noInteractions = new HashMap<>();
-        
         Game expected = new Game("Default", 25.f, 0.025f, 0.025f, balls, gadgets, noInteractions);
-        Game parsed = FlingballParser.parse("boards/default.fb");
         
-        assertEquals("expected parsed default game to match expected game", expected, parsed);
+        try {
+            String emptyGameString = pathToString("boards/default.fb");
+            Game parsed = FlingballParser.parse(emptyGameString);
+            assertEquals("expected parsed empty game to match expected game", expected, parsed);
+        } catch (FileNotFoundException e) {
+            assertTrue("file not found",false);
+        }
+
     }
     
     // covers 3 Balls
@@ -110,10 +123,14 @@ public class ParserTest {
         gadgets.add(new TriangleBumper("Tri", 19, 0, 90));
         gadgets.add(abs1);
         gadgets.add(abs2);
-        gadgets.add(new Wall(0, 0, 20, 0));
-        gadgets.add(new Wall(0, 0, 0, 20));
-        gadgets.add(new Wall(0, 20, 20, 20));
-        gadgets.add(new Wall(0, 20, 20, 0));
+        Wall top = new Wall("top", 0, 0, 20, 0);
+        Wall left = new Wall("left", 0, 20, 0, 0);
+        Wall right = new Wall("right", 20, 0, 20, 20);
+        Wall bottom = new Wall("bottom", 20, 20, 0, 20);
+        gadgets.add(top);
+        gadgets.add(left);
+        gadgets.add(right);
+        gadgets.add(bottom);
         
         Map<String,String> interactions = new HashMap<>();
         interactions.put("CircleA", "Abs1");
@@ -124,9 +141,15 @@ public class ParserTest {
         interactions.put("Abs2", "Abs2");
         
         Game expected = new Game("Absorber", 25.f, 0.025f, 0.025f, balls, gadgets, interactions);
-        Game parsed = FlingballParser.parse("boards/absorber.fb");
         
-        assertEquals("expected parsed absorber game to match expected game", expected, parsed);
+        try {
+            String emptyGameString = pathToString("boards/absorber.fb");
+            Game parsed = FlingballParser.parse(emptyGameString);
+            assertEquals("expected parsed empty game to match expected game", expected, parsed);
+        } catch (FileNotFoundException e) {
+            assertTrue("file not found",false);
+        }
+
     }
     
     // covers 0 Balls
@@ -141,17 +164,26 @@ public class ParserTest {
         List<Ball> noBalls = new ArrayList<>();
         
         List<Gadget> gadgets = new ArrayList<>();
-        gadgets.add(new Wall(0, 0, 20, 0));
-        gadgets.add(new Wall(0, 0, 0, 20));
-        gadgets.add(new Wall(0, 20, 20, 20));
-        gadgets.add(new Wall(0, 20, 20, 0));
+        Wall top = new Wall("top", 0, 0, 20, 0);
+        Wall left = new Wall("left", 0, 20, 0, 0);
+        Wall right = new Wall("right", 20, 0, 20, 20);
+        Wall bottom = new Wall("bottom", 20, 20, 0, 20);
+        gadgets.add(top);
+        gadgets.add(left);
+        gadgets.add(right);
+        gadgets.add(bottom);
         
         Map<String,String> emptyInteractions = new HashMap<>();
         
         Game expected = new Game("Empty", 25.f, 0.03f, 0.02f, noBalls, gadgets, emptyInteractions);
-        Game parsed = FlingballParser.parse("boards/empty.fb");
         
-        assertEquals("expected parsed empty game to match expected game", expected, parsed);
+        try {
+            String emptyGameString = pathToString("boards/empty.fb");
+            Game parsed = FlingballParser.parse(emptyGameString);
+            assertEquals("expected parsed empty game to match expected game", expected, parsed);
+        } catch (FileNotFoundException e) {
+            assertTrue("file not found",false);
+        }    
     }
     
     // covers 0 Balls
@@ -175,16 +207,39 @@ public class ParserTest {
         gadgets.add(new CircleBumper("CircleC", 8, 18));
         gadgets.add(new CircleBumper("CircleD", 9, 18));
         gadgets.add(new TriangleBumper("Tri", 12, 15));
-        gadgets.add(new Wall(0, 0, 20, 0));
-        gadgets.add(new Wall(0, 0, 0, 20));
-        gadgets.add(new Wall(0, 20, 20, 20));
-        gadgets.add(new Wall(0, 20, 20, 0));
+        Wall top = new Wall("top", 0, 0, 20, 0);
+        Wall left = new Wall("left", 0, 20, 0, 0);
+        Wall right = new Wall("right", 20, 0, 20, 20);
+        Wall bottom = new Wall("bottom", 20, 20, 0, 20);
+        gadgets.add(top);
+        gadgets.add(left);
+        gadgets.add(right);
+        gadgets.add(bottom);
         
         Map<String,String> noInteractions = new HashMap<>();
         
         Game expected = new Game("DefaultTriangle", 25.f, 0.025f, 0.025f, balls, gadgets, noInteractions);
-        Game parsed = FlingballParser.parse("boards/defaultTriangle.fb");
         
-        assertEquals("expected parsed default triangle game to match expected game", expected, parsed);
+        try {
+            String emptyGameString = pathToString("boards/defaultTriangle.fb");
+            Game parsed = FlingballParser.parse(emptyGameString);
+            assertEquals("expected parsed empty game to match expected game", expected, parsed);
+        } catch (FileNotFoundException e) {
+            assertTrue("file not found",false);
+        }   
+
     }
+    
+    private static String pathToString(String filepath) throws FileNotFoundException{
+        File file = new File(filepath);
+        String wordString = new String();
+        Scanner fileWords = new Scanner(file);
+        while(fileWords.hasNextLine()) {
+            wordString = wordString + "\n" + fileWords.nextLine();
+        }
+        fileWords.close();
+        System.out.println(wordString);
+        return wordString;
+    }
+    
 }

@@ -83,7 +83,7 @@ public class Flingball {
     }
 
     public static void displayDefault() throws UnableToParseException, FileNotFoundException{
-        final String defaultContent = getString("src/flingball/default.fb");
+        final String defaultContent = getString("boards/default.fb");
         System.out.println(defaultContent);
         final Game defaultGame = FlingballParser.parse(defaultContent);
         final Simulator simulator = new Simulator(defaultGame);

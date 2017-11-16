@@ -1,5 +1,6 @@
 package flingball;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -260,7 +261,7 @@ public class Game {
         // gravity and friction values must be the same
         if (this.gravity != gameThat.gravity() 
                 || this.friction1 != gameThat.friction1() 
-                || this.friction2 != gameThat.friction2());
+                || this.friction2 != gameThat.friction2()) return false;
         
         // balls must be the same
         if (!this.balls.equals(gameThat.balls())) return false;

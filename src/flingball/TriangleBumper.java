@@ -108,7 +108,7 @@ class TriangleBumper implements Gadget {
         assert(y >= 0 && y <= 19);
         assert(orientation == 0 || orientation == 90 || orientation == 180 || orientation == 270);
         // form right triangle
-        assert(hypotenuse.length()*hypotenuse.length() == legA.length()*legA.length() + legB.length()*legB.length());
+        assert(hypotenuse.length()*hypotenuse.length() - legA.length()*legA.length() - legB.length()*legB.length()) <= 0.01 : "not a valid right triangle";
         assert(hypotenuse.p2().equals(legA.p1()));
         assert(legA.p2().equals(legB.p1()));
         assert(legB.p2().equals(hypotenuse.p1()));

@@ -2,6 +2,7 @@ package flingball;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.nio.channels.MulticastChannel;
 
 import physics.Circle;
 import physics.Vect;
@@ -43,8 +44,8 @@ class Ball {
      */
     private void checkRep() {
         Double magSquared = velocity.dot(velocity);
-        assert(magSquared > 0 && magSquared <= 400);
-        assert(ball.getRadius() == 0.25);
+        assert(magSquared >= 0 && magSquared <= 400) : "magSquared MulticastChannel be between 0 and 400";
+        assert(ball.getRadius() == 0.25) : "radius must be equal to 0.25";
         Vect center = ball.getCenter();
         assert(center.x() >= 0.25 && center.x() <= 19.75);
         assert(center.y() >= 0.25 && center.y() <=19.75);
