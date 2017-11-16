@@ -11,7 +11,6 @@ import edu.mit.eecs.parserlib.ParseTree;
 import edu.mit.eecs.parserlib.Parser;
 import edu.mit.eecs.parserlib.UnableToParseException;
 import edu.mit.eecs.parserlib.Visualizer;
-import memely.ExpressionParser.ExpressionGrammar;
 
 /**
  * Flingball Parser that parses a game file into a Flingball game.
@@ -58,7 +57,10 @@ public class FlingballParser {
     }
     
     private enum FlingballGrammar {
-        GAME, BOARD, GADGET, SQUARE, CIRCLE, TRIANGLE, ABSORBER, INTERACTION, BALL, INTEGER, NAME, FLOAT, ANGLE, COMMENT, WHITESPACE
+        GAME, BOARD, GADGET, INTERACTION,
+        SQUARE, CIRCLE, TRIANGLE, ABSORBER, BALL, 
+        GRAVITY, FRICTION1, FRICTION2,
+        INTEGER, NAME, FLOAT, ANGLE, COMMENT, WHITESPACE
     }
 
     private static Parser<FlingballGrammar> parser = makeParser();
@@ -132,9 +134,25 @@ public class FlingballParser {
                 final List<ParseTree<FlingballGrammar>> information = board.children();
 
                 final String name = information.get(0).text();
-                final float gravity = information.size() >= 2 ? Float.parseFloat(information.get(1).text()) : defaultGravity ; 
-                final float friction1 = information.size() >= 3 ? Float.parseFloat(information.get(2).text()) : defaultFriction;
-                final float friction2 = information.size() >= 4 ? Float.parseFloat(information.get(3).text()) : defaultFriction;
+                float gravity = defaultGravity;
+                float friction1 = defaultFriction;
+                float friction2 = defaultFriction;
+                
+                for (ParseTree<FlingballGrammar> fact : information) {
+                    switch (fact.name()) {
+                    case GRAVITY:
+                        gravity = Float.parseFloat(fact.children().get(0).text());
+                        break;
+                    case FRICTION1:
+                        friction1 = Float.parseFloat(fact.children().get(0).text());
+                        break;
+                    case FRICTION2:
+                        friction2 = Float.parseFloat(fact.children().get(0).text());
+                        break;
+                    default:
+                        break;
+                    }
+                }
                 
                 final List<Ball> balls = new ArrayList<>();
                 final List<Gadget> gadgets = new ArrayList<>();

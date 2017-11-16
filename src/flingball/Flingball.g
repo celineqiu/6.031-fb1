@@ -4,7 +4,7 @@
 
 @skip whitespace {
 	game ::= COMMENT* board (COMMENT | ball | gadget | interaction)*;
-	board::= 'board' 'name''=' NAME ('gravity''=' FLOAT)? ('friction1=' FLOAT)? ('friction2=' FLOAT)?;
+	board::= 'board' 'name''=' NAME gravity? friction1? friction2?;
 	gadget::= circle | triangle | absorber | square;
 	square::= 'squareBumper' 'name''='NAME 'x''='INTEGER 'y''='INTEGER;
 	circle::= 'circleBumper' 'name''='NAME 'x''='INTEGER 'y''='INTEGER;
@@ -12,6 +12,10 @@
 	absorber::= 'absorber' 'name''='NAME 'x''='INTEGER 'y''='INTEGER 'width''='INTEGER 'height''='INTEGER;
 	interaction::= 'fire' 'trigger''='NAME 'action''='NAME;
 	ball::= 'ball name='NAME 'x='FLOAT 'y='FLOAT 'xVelocity='FLOAT 'yVelocity='FLOAT;
+	
+	gravity::= 'gravity''=' FLOAT;
+	friction1::= 'friction1''=' FLOAT;
+	friction2::= 'friction2''=' FLOAT;
 	
 
 }
