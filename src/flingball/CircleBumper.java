@@ -2,9 +2,11 @@ package flingball;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.List;
 
 import physics.Circle;
 import physics.Vect;
+import physics.Physics;
 
 /**
  * Represents a Circle Bumper Gadget in a Flingball game.
@@ -30,66 +32,98 @@ class CircleBumper implements Gadget {
         this.x = x;
         this.y = y;
         this.circle = new Circle(x+0.5, y+0.5, 0.5);
+        checkRep();
     }
     
     /**
      * Check that the rep invariant is satisfied.
      */
     private void checkRep() {
-        // TODO
+        assert(x >= 0 && x <= 19);
+        assert(y >= 0 && y <= 19);
+        Vect center = circle.getCenter();
+        assert(center.x() == x+0.5);
+        assert(center.y() == y+0.5);
+        assert(circle.getRadius() == 0.5);
+    }
+    
+    /**
+     * @return origin of circle bumper bounding box
+     */
+    public Vect getOrigin() {
+        return new Vect(this.x, this.y);
+    }
+    
+    /**
+     * @return circle representing circle bumper
+     */
+    private Circle getCircle() {
+        return new Circle(this.x+0.5, this.y+0.5, 0.5);
     }
     
     @Override
     public String name() {
-        // TODO
+        return this.name;
     }
     
-    /**
-     * Calculate the time until the ball collides with this gadget.
-     * @param ball in the playing area 
-     * @return time until the ball colides with this gadget
-     */
+    
+    @Override
     public Double timeUntilCollision(Ball ball) {
-        // TODO
+        return Physics.timeUntilCircleCollision(this.circle, ball.getCircle(), ball.getVelocity());
     }
     
-    /**
-     * Calculate the new velocity of the ball after collision.
-     * @return velocity of the ball after collision
-     */
+    
+   @Override
     public Vect velocityAfterCollision(Ball ball) {
-        // TODO
+        return Physics.reflectCircle(this.circle.getCenter(), ball.getCenter(), ball.getVelocity());
     }
+
     
     @Override 
     public String toString() {
-        // TODO
+        String toStr = "name: " + this.name + "\n" +
+                       "origin: " + this.x + ", " + this.y;
+        return toStr;
     }
     
     @Override
     public boolean equals(Object that) {
-        // TODO
+        if (!(that instanceof CircleBumper)) {
+            return false;
+        } 
+        CircleBumper thatBumper = (CircleBumper) that;
+        if (this.name.equals(thatBumper.name()) &&
+            this.getOrigin().equals(thatBumper.getOrigin()) &&
+            this.circle.equals(thatBumper.getCircle())) {
+            return true;
+        }
+        return false;
     }
     
     @Override
     public int hashCode() {
-        // TODO
+        return this.name.hashCode() + this.x + this.y + this.circle.hashCode();
     }
     
     @Override
-    public boolean trigger() {
+    public boolean trigger(List<Ball> balls) {
         // TODO
     }
     
     @Override
     public void action() {
-        // TODO
+        // no action
     }
     
     @Override
-    public void drawIcon(Graphics2D g, final int scaler) {
+    public CircleBumper copy() {
+        return new CircleBumper(this.name, this.x, this.y);
+    }
+    
+    @Override
+    public void drawIcon(Graphics2D g, final int scaler, List<Ball> balls) {
         
-        if (trigger()) {
+        if (trigger(balls)) {
             g.setColor(Color.YELLOW);
         }else {
             g.setColor(Color.RED); 

@@ -35,13 +35,19 @@ class Ball {
         this.name = name;
         this.ball = new Circle(x, y, 0.25);
         this.velocity = new Vect(xVelocity, yVelocity);
+        checkRep();
     }
     
     /**
      * Check that the rep invariant is satisfied.
      */
     private void checkRep() {
-        // TODO
+        Double magSquared = velocity.dot(velocity);
+        assert(magSquared > 0 && magSquared <= 400);
+        assert(ball.getRadius() == 0.25);
+        Vect center = ball.getCenter();
+        assert(center.x() >= 0.25 && center.x() <= 19.75);
+        assert(center.y() >= 0.25 && center.y() <=19.75);
     }
     
     /**
@@ -82,15 +88,16 @@ class Ball {
      * @x x value of the velocity of the ball
      * @y y value of the velocity of the ball
      */
-    public void getVelocity(double x, double y) {
+    public void setVelocity(double x, double y) {
         this.velocity = new Vect(x, y);
     }
     
     /**
-     * Update the ball's position and velocity as affected by the default gravity value 25 L/sec2.
+     * Get the circle representing the ball.
+     * @return circle representing the ball
      */
-    public void gravity() {
-        // TODO
+    public Circle getCircle() {
+        return new Circle(this.ball.getCenter().x(), this.ball.getCenter().y(), 0.25);
     }
     
     /**
@@ -102,19 +109,47 @@ class Ball {
     }
     
     /**
-     * Update the ball's position and velocity as affected by the default frictional constants
-     * friction1 (mu) = 0.025/sec and friction2 (mu2) = 0.025/L.
-     */
-    public void friction() {
-        // TODO
-    }
-    
-    /**
      * Update the ball's position and velocity as affected by the given 
      * frictional constants friction1 and friction2 (mu and mu2).
      */
     public void friction(double friction1, double friction2) {
         // TODO
+    }
+    
+    @Override 
+    public String toString() {
+        String toStr = "name: " + this.name + "\n" +
+                       "center: (" + this.ball.getCenter().x() + "," + this.ball.getCenter().y() + ")" + "\n" +
+                       "velocity: (" + this.velocity.x() + "," + this.velocity.y() + ")";
+        return toStr;
+    }
+    
+    @Override
+    public boolean equals(Object that) {
+        if (!(that instanceof Ball)) {
+            return false;
+        } 
+        Ball thatBall = (Ball) that;
+        if (this.name.equals(thatBall.name()) &&
+            this.ball.equals(thatBall.getCircle()) &&
+            this.velocity.equals(thatBall.getVelocity())) {
+            return true;
+        }
+        return false;
+    }
+    
+    @Override
+    public int hashCode() {
+        return this.name.hashCode() + this.ball.hashCode() + this.velocity.hashCode();
+    }
+    
+    /**
+     * Make a defensive copy of the ball
+     * @return copy of the ball
+     */
+    public Ball copy() {
+        return new Ball(this.name, ball.getCenter().x(), ball.getCenter().y(),
+                        velocity.x(), velocity.y());
     }
     
     public void drawIcon(final Graphics2D g, final int scaler) {

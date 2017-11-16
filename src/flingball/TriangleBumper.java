@@ -2,9 +2,12 @@ package flingball;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.List;
 
 import physics.Circle;
 import physics.LineSegment;
+import physics.Physics;
 import physics.Vect;
 
 /**
@@ -15,6 +18,8 @@ class TriangleBumper implements Gadget {
     private final int x, y, orientation;
     private final LineSegment legA, legB, hypotenuse;
     private final Circle cornerA, cornerB, rightAngleCorner;
+    private final List<LineSegment> legs = new ArrayList<>();
+    private final List<Circle> corners = new ArrayList<>();
     
     // Abstract Function:
     //   AF(name, x, y, orientation, legA, legB, hypotenuse, cornerA, cornerB, rightAngleCorner) 
@@ -39,82 +44,230 @@ class TriangleBumper implements Gadget {
         this.x = x;
         this.y = y;
         this.orientation = 0;
-        // define the triangle sides and corners according to default orientation
+        
+        // triangles legs drawn counterclockwise
+        Vect p1 = new Vect(x+1, y);
+        Vect p2 = new Vect(x, y);
+        Vect p3 = new Vect(x, y+1);
+        
+        rightAngleCorner = new Circle(p2, 0);
+        cornerA = new Circle(p3, 0);
+        cornerB = new Circle(p1, 0);
+        
+        legA = new LineSegment(p1, p2);
+        legB = new LineSegment(p2, p3);
+        hypotenuse = new LineSegment(p3, p1);
+        
+        checkRep();
     }
-    
-    public TriangleBumper(String name, int x, int y, int orientation) {
+       
+    public TriangleBumper(String name, int x, int y, int orientation) throws IllegalArgumentException {
         this.name = name;
         this.x = x;
         this.y = y;
         this.orientation = orientation;
-        // define the triangle sides and corners according to orientation
+        
+        // triangles legs drawn counterclockwise
+        Vect p1, p2, p3;
+        if (orientation == 0) {
+            p1 = new Vect(x+1, y);
+            p2 = new Vect(x, y);
+            p3 = new Vect(x, y+1);
+        } else if (orientation == 90) {
+            p1 = new Vect(x+1, y+1);
+            p2 = new Vect(x+1, y);
+            p3 = new Vect(x, y);
+        } else if (orientation == 180) {
+            p1 = new Vect(x, y+1);
+            p2 = new Vect(x+1, y+1);
+            p3 = new Vect(x+1, y);
+        } else if (orientation == 270) {
+            p1 = new Vect(x, y);
+            p2 = new Vect(x, y+1);
+            p3 = new Vect(x+1, y+1);
+        } else {
+            throw new IllegalArgumentException("invalid orientation");
+        }
+        
+        rightAngleCorner = new Circle(p2, 0);
+        cornerA = new Circle(p3, 0);
+        cornerB = new Circle(p1, 0);
+        
+        legA = new LineSegment(p1, p2);
+        legB = new LineSegment(p2, p3);
+        hypotenuse = new LineSegment(p3, p1);
+        
+        checkRep();
     }
     
     /**
      * Check that the rep invariant is satisfied.
      */
     private void checkRep() {
-        // TODO
+        assert(x >= 0 && x <= 19);
+        assert(y >= 0 && y <= 19);
+        assert(orientation == 0 || orientation == 90 || orientation == 180 || orientation == 270);
+        // form right triangle
+        assert(hypotenuse.length()*hypotenuse.length() == legA.length()*legA.length() + legB.length()*legB.length());
+        assert(hypotenuse.p2().equals(legA.p1()));
+        assert(legA.p2().equals(legB.p1()));
+        assert(legB.p2().equals(hypotenuse.p1()));
+        
+        // opposite correct corners
+        assert(!(cornerA.getCenter().equals(legA.p1()) || cornerA.getCenter().equals(legA.p2())));
+        assert(!(cornerB.getCenter().equals(legB.p1()) || cornerB.getCenter().equals(legB.p2())));
+        assert(!(rightAngleCorner.getCenter().equals(hypotenuse.p1()) || rightAngleCorner.getCenter().equals(hypotenuse.p2())));
     }
     
     @Override
     public String name() {
-        // TODO
+        return this.name;
     }
     
     /**
-     * Calculate the time until the ball collides with this gadget.
-     * @param ball in the playing area 
-     * @return time until the ball colides with this gadget
+     * @return origin of the triangle bumper bounding box
      */
-    public Double timeUntilCollision(Ball ball) {
-        // TODO
+    public Vect getOrigin() {
+        return new Vect(this.x, this.y);
     }
     
     /**
-     * Calculate the new velocity of the ball after collision.
-     * @return velocity of the ball after collision
+     * @return orientation of the triangle bumper
      */
-    public Vect velocityAfterCollision(Ball ball) {
-        // TODO
+    public int getOrientation() {
+        return this.orientation;
+    }
+    
+    /**
+     * @return list of the legs of the triangle bumper
+     */
+    public List<LineSegment> getLegs() {
+        List<LineSegment> legsCopy = new ArrayList<>();
+        legsCopy.add(new LineSegment(legA.p1(), legA.p2()));
+        legsCopy.add(new LineSegment(legB.p1(), legB.p2()));
+        legsCopy.add(new LineSegment(hypotenuse.p1(), hypotenuse.p2()));
+        return legsCopy;
+    }
+    
+    /**
+     * @return list of the corners of the triangle bumper
+     */
+    public List<Circle> getCorners() {
+        List<Circle> cornersCopy = new ArrayList<>();
+        cornersCopy.add(new Circle(cornerA.getCenter(), cornerA.getRadius()));
+        cornersCopy.add(new Circle(cornerB.getCenter(), cornerB.getRadius()));
+        cornersCopy.add(new Circle(rightAngleCorner.getCenter(), rightAngleCorner.getRadius()));
+        return cornersCopy;
     }
     
     @Override
-    public Vect getPosition() {
-        return new Vect(x, y);
+    public Double timeUntilCollision(Ball ball) {
+        // initialize values
+        Double minLeg = Double.MAX_VALUE;
+        Double minCorner = Double.MAX_VALUE;
+        
+        // find closest edge and corner
+        for (LineSegment leg : legs) {
+            Double time = Physics.timeUntilWallCollision(leg, ball.getCircle(), ball.getVelocity());
+            if (time < minLeg) {
+                minLeg = time;
+            }
+        }
+        for (Circle corner : corners) {
+            Double time = Physics.timeUntilCircleCollision(corner, ball.getCircle(), ball.getVelocity());
+            if (time < minCorner) {
+                minCorner = time;
+            }
+        }
+        
+        return Math.min(minLeg, minCorner);    
+    }
+    
+    @Override
+    public Vect velocityAfterCollision(Ball ball) {
+        // initialize values
+        LineSegment closestLeg = new LineSegment(0, 0, 1, 1);
+        Circle closestCorner = new Circle(0, 0, 0);
+        Double minLeg = Double.MAX_VALUE;
+        Double minCorner = Double.MAX_VALUE;
+        
+        // find closest edge and corner
+        for (LineSegment leg : legs) {
+            Double time = Physics.timeUntilWallCollision(leg, ball.getCircle(), ball.getVelocity());
+            if (time < minLeg) {
+                minLeg = time;
+                closestLeg = leg;
+            }
+        }
+        for (Circle corner : corners) {
+            Double time = Physics.timeUntilCircleCollision(corner, ball.getCircle(), ball.getVelocity());
+            if (time < minCorner) {
+                minCorner = time;
+                closestCorner = corner;
+            }
+        }
+        
+        // find closest object & post collision velocity
+        Vect newVel;
+        if (minCorner <= minLeg) {
+            newVel = Physics.reflectCircle(closestCorner.getCenter(), ball.getCenter(), ball.getVelocity());
+        } else {
+            newVel = Physics.reflectWall(closestLeg, ball.getVelocity());
+        }
+        
+        return newVel;
     }
     
     @Override 
     public String toString() {
-        // TODO
+        String toStr = "name: " + this.name + "\n" +
+                       "origin: (" + this.x + "," + this.y + ")" + "\n" +
+                       "orientation: " + this.orientation;
+        return toStr;
     }
     
     @Override
     public boolean equals(Object that) {
-        // TODO
+        if (!(that instanceof TriangleBumper)) {
+            return false;
+        }
+        TriangleBumper thatBumper = (TriangleBumper) that;
+        if (this.name.equals(thatBumper.name()) &&
+            this.getOrigin().equals(thatBumper.getOrigin()) &&
+            this.orientation == thatBumper.getOrientation() &&
+            this.getLegs().equals(thatBumper.getLegs()) &&
+            this.getCorners().equals(thatBumper.getCorners())) {
+            return true;
+        }
+        return false;
     }
     
     @Override
     public int hashCode() {
-        // TODO
+        return this.name.hashCode() + this.x + this.y + this.orientation;
     }
     
     @Override
-    public boolean trigger() {
+    public boolean trigger(List<Ball> balls) {
         // TODO
     }
     
     @Override
     public void action() {
-        // TODO
+        // no action
+    }
+    
+    @Override
+    public TriangleBumper copy() {
+        return new TriangleBumper(this.name, this.x, this.y, this.orientation);
     }
 
     @Override
-    public void drawIcon(Graphics2D g, final int scaler) {
+    public void drawIcon(Graphics2D g, final int scaler, List<Ball> balls) {
         final int width = 1;
         final int height = 1;
         
-        if (trigger()) {
+        if (trigger(balls)) {
             g.setColor(Color.YELLOW);
         }else {
             g.setColor(Color.ORANGE); 

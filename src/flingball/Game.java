@@ -169,8 +169,10 @@ public class Game {
      * Check for triggers at every frame of the Flingball Game.
      */
     public void checkTriggers() {
+        List<Ball> ballList = new ArrayList<>();
+        ballList.addAll(balls.values());
         for (Gadget triggerObject: interactions.keySet()) {
-            if (triggerObject.trigger()) {
+            if (triggerObject.trigger(ballList)) {
                 Gadget actionObject = interactions.get(triggerObject);
                 actionObject.action();
             }

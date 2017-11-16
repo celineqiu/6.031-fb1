@@ -1,5 +1,6 @@
 package flingball;
 import java.awt.Graphics2D;
+import java.util.List;
 
 import physics.Vect;
 
@@ -36,9 +37,10 @@ public interface Gadget {
     /**
      * boolean that indicates if a gadget is on trigger
      * detailed condition varies according to specific gadget types
+     * @param list of balls
      * @return boolean that indicates if a gadget is on trigger
      */
-    public boolean trigger();
+    public boolean trigger(List<Ball> balls);
     
     /**
      * action a gadget takes after specific trigger is on
@@ -50,10 +52,15 @@ public interface Gadget {
      * position and dimension scaled.
      * @param g Graphics to be drawn on, mutated
      * @param scaler coefficient that helps turning Gadget size into values;
+     * @param list of balls
      */
-    public void drawIcon(Graphics2D g, int scaler);
+    public void drawIcon(Graphics2D g, int scaler, List<Ball> balls);
     
-    
+    /**
+     * make a defensive copy of gadget
+     * @return copy of gadget
+     */
+    public Gadget copy();
     
     /**
      * @return a human-readable representation of this gadget.
