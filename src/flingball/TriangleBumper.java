@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.soap.Detail;
+
 import physics.Circle;
 import physics.LineSegment;
 import physics.Physics;
@@ -54,10 +56,16 @@ class TriangleBumper implements Gadget {
         rightAngleCorner = new Circle(p2, 0);
         cornerA = new Circle(p3, 0);
         cornerB = new Circle(p1, 0);
+        corners.add(rightAngleCorner);
+        corners.add(cornerA);
+        corners.add(cornerB);
         
         legA = new LineSegment(p1, p2);
         legB = new LineSegment(p2, p3);
         hypotenuse = new LineSegment(p3, p1);
+        legs.add(legA);
+        legs.add(legB);
+        legs.add(hypotenuse);
         
         checkRep();
     }
@@ -93,10 +101,16 @@ class TriangleBumper implements Gadget {
         rightAngleCorner = new Circle(p2, 0);
         cornerA = new Circle(p3, 0);
         cornerB = new Circle(p1, 0);
+        corners.add(rightAngleCorner);
+        corners.add(cornerA);
+        corners.add(cornerB);
         
         legA = new LineSegment(p1, p2);
         legB = new LineSegment(p2, p3);
         hypotenuse = new LineSegment(p3, p1);
+        legs.add(legA);
+        legs.add(legB);
+        legs.add(hypotenuse);
         
         checkRep();
     }
@@ -180,7 +194,6 @@ class TriangleBumper implements Gadget {
                 minCorner = time;
             }
         }
-        
         return Math.min(minLeg, minCorner);    
     }
     
@@ -249,24 +262,26 @@ class TriangleBumper implements Gadget {
     }
     
     @Override
-    public boolean trigger(List<Ball> balls) {
-        for (Ball ball : balls) {
-            for (Circle corner : corners) {
-                Double distSquared = Physics.distanceSquared(corner.getCenter(), ball.getCenter()); 
-                if (distSquared <= INTERSECT) {
-                    return true;
-                }
-            }
-            for (LineSegment leg : legs) {
-                Vect closestPoint = Physics.perpendicularPoint(leg, ball.getCenter());
-                Double distSquared = Physics.distanceSquared(closestPoint, ball.getCenter());
-                if (distSquared <= INTERSECT) {
-                    return true;
-                }
-                
-            }
-        }
-        return false;
+    public boolean trigger(Ball ball, double deltaT) {
+//        for (Ball ball : balls) {
+//            for (Circle corner : corners) {
+//                Double distSquared = Physics.distanceSquared(corner.getCenter(), ball.getCenter()); 
+//                if (distSquared <= INTERSECT) {
+//                    return true;
+//                }
+//            }
+//            for (LineSegment leg : legs) {
+//                Vect closestPoint = Physics.perpendicularPoint(leg, ball.getCenter());
+//                Double distSquared = Physics.distanceSquared(closestPoint, ball.getCenter());
+//                if (distSquared <= INTERSECT) {
+//                    return true;
+//                }
+//                
+//            if (timeUntilCollision(ball) < deltaT) return true;
+//            }
+////        }
+//        return false;
+        return timeUntilCollision(ball) < deltaT;
     }
     
     @Override
@@ -280,12 +295,12 @@ class TriangleBumper implements Gadget {
     }
 
     @Override
-    public void drawIcon(Graphics2D g, final int scaler, List<Ball> balls) {        
-//        if (trigger(balls)) {
-//            g.setColor(Color.YELLOW);
-//        }else {
-            g.setColor(Color.ORANGE); 
-//        }
+    public void drawIcon(Graphics2D g, final int scaler, List<Ball> balls, double deltaT) {        
+        
+        g.setColor(Color.ORANGE); 
+        for (Ball ball : balls) {
+        if (trigger(ball, deltaT))  g.setColor(Color.YELLOW);
+        }
         
         final int[] xValues = new int[] {
                 (int) Math.round(cornerA.getCenter().x()*scaler),

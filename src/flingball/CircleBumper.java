@@ -107,14 +107,15 @@ class CircleBumper implements Gadget {
     }
     
     @Override
-    public boolean trigger(List<Ball> balls) {
-        for (Ball ball : balls) {
-            Double distSquared = Physics.distanceSquared(circle.getCenter(), ball.getCenter()); 
-            if (distSquared <= INTERSECT) {
-                return true;
-            } 
-        }
-        return false;
+    public boolean trigger(Ball ball, double deltaT) {
+//        for (Ball ball : balls) {
+//            Double distSquared = Physics.distanceSquared(circle.getCenter(), ball.getCenter()); 
+//            if (distSquared <= INTERSECT) {
+//                return true;
+//            } 
+//        }
+//        return false;
+        return timeUntilCollision(ball) < deltaT;
     }
     
     @Override
@@ -128,14 +129,13 @@ class CircleBumper implements Gadget {
     }
     
     @Override
-    public void drawIcon(Graphics2D g, final int scaler, List<Ball> balls) {
+    public void drawIcon(Graphics2D g, final int scaler, List<Ball> balls, double deltaT) {
         
-//        if (trigger(balls)) {
-//            g.setColor(Color.YELLOW);
-//        }else {
-            g.setColor(Color.GREEN); 
-//        }
-        
+        g.setColor(Color.PINK); 
+        for (Ball ball : balls) {
+        if (trigger(ball, deltaT))  g.setColor(Color.YELLOW);
+        }
+
         int displayX = (int) Math.round(x*scaler);
         int displayY = (int) Math.round(y*scaler);
         int displayRadius = (int) Math.round(circle.getRadius()*scaler);

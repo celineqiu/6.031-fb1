@@ -76,7 +76,7 @@ public class Simulator {
         
 
         for (Gadget gadget : this.game.gadgets().values()) {
-            gadget.drawIcon(g2, PIXELS_PER_L, new ArrayList<Ball>(this.game.balls().values()));
+            gadget.drawIcon(g2, PIXELS_PER_L, new ArrayList<Ball>(this.game.balls().values()), TIMER_INTERVAL_MILLISECONDS*0.001);
         }
         
         

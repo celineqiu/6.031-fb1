@@ -20,7 +20,7 @@ class SquareBumper implements Gadget {
     private final Circle bottomLeft, bottomRight, topLeft, topRight;
     private final List<LineSegment> edges = new ArrayList<>();
     private final List<Circle> corners = new ArrayList<>();
-    private final Double INTERSECT = 0.25*0.25;
+//    private final Double INTERSECT = 0.25*0.25;
     
     // Abstract Function:
     //   AF(name, x, y, bottom, top, left, right, bottomLeft, bottomRight, topLeft, topRight, edges, corner) 
@@ -220,24 +220,26 @@ class SquareBumper implements Gadget {
     }
     
     @Override
-    public boolean trigger(List<Ball> balls) {
-        for (Ball ball : balls) {
-            for (Circle corner : corners) {
-                Double distSquared = Physics.distanceSquared(corner.getCenter(), ball.getCenter()); 
-                if (distSquared <= INTERSECT) {
-                    return true;
-                } 
-            }
-            for (LineSegment edge : edges) {
-                Vect closestPoint = Physics.perpendicularPoint(edge, ball.getCenter());
-                Double distSquared = Physics.distanceSquared(closestPoint, ball.getCenter());
-                if (distSquared <= INTERSECT) {
-                    return true;
-                }
-                
-            }
-        }
-        return false;
+    public boolean trigger(Ball ball, double deltaT) {
+//        for (Ball ball : balls) {
+//            for (Circle corner : corners) {
+//                Double distSquared = Physics.distanceSquared(corner.getCenter(), ball.getCenter()); 
+//                if (distSquared <= INTERSECT) {
+//                    return true;
+//                } 
+//            }
+//            for (LineSegment edge : edges) {
+//                Vect closestPoint = Physics.perpendicularPoint(edge, ball.getCenter());
+//                Double distSquared = Physics.distanceSquared(closestPoint, ball.getCenter());
+//                if (distSquared <= INTERSECT) {
+//                    return true;
+//                }
+//                
+//            if (timeUntilCollision(ball) < deltaT) return true;
+//            }
+////        }
+//        return false;
+        return timeUntilCollision(ball) < deltaT;
     }
     
     @Override
@@ -251,15 +253,14 @@ class SquareBumper implements Gadget {
     }
     
     @Override
-    public void drawIcon(Graphics2D g, final int scaler, List<Ball> balls) {
+    public void drawIcon(Graphics2D g, final int scaler, List<Ball> balls, double deltaT) {
         final int width = 1;
         final int height = 1;
         
-//        if (trigger(balls)) {
-//            g.setColor(Color.YELLOW);
-//        }else {
-            g.setColor(Color.RED); 
-//        }
+        g.setColor(Color.RED); 
+        for (Ball ball : balls) {
+        if (trigger(ball, deltaT))  g.setColor(Color.YELLOW);
+        }
         
         int displayX = (int) Math.round(x*scaler);
         int displayY = (int) Math.round(y*scaler);

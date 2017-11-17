@@ -35,12 +35,13 @@ public interface Gadget {
     public Vect velocityAfterCollision(Ball ball);
     
     /**
-     * boolean that indicates if a gadget is on trigger
+     * boolean that indicates if a gadget is on trigger from a ball
      * detailed condition varies according to specific gadget types
-     * @param list of balls
-     * @return boolean that indicates if a gadget is on trigger
+     * @param ball to check if it is triggering this gadget
+     * @param deltaT threshold for collisions
+     * @return boolean that indicates if a gadget is on trigger from a ball
      */
-    public boolean trigger(List<Ball> balls);
+    public boolean trigger(Ball ball, double deltaT);
     
     /**
      * action a gadget takes after specific trigger is on
@@ -53,8 +54,9 @@ public interface Gadget {
      * @param g Graphics to be drawn on, mutated
      * @param scaler coefficient that helps turning Gadget size into values;
      * @param list of balls
+     * @param deltaT timestep of drawing the icon
      */
-    public void drawIcon(Graphics2D g, int scaler, List<Ball> balls);
+    public void drawIcon(Graphics2D g, int scaler, List<Ball> balls, double deltaT);
     
     /**
      * make a defensive copy of gadget

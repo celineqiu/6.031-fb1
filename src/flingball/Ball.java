@@ -2,7 +2,6 @@ package flingball;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.nio.channels.MulticastChannel;
 
 import physics.Circle;
 import physics.Vect;
@@ -14,6 +13,7 @@ class Ball {
     private String name;
     private Circle ball;
     private Vect velocity;
+    private Boolean status = true;
     
     // Abstract Function:
     //   AF(ball, velocity) = ball of diameter 0.5L with a velocity in the Flingball playing area  
@@ -158,18 +158,35 @@ class Ball {
     }
     
     /**
+     * Check if a ball is active. Balls held in an Absorber are inactive.
+     * @return the status of the ball
+     */
+    public boolean isActive() {
+        return this.status;
+    }
+    
+    /**s
+     * Update the status of the ball.
+     * @param status new status the ball is updated with
+     */
+    public void setActive(boolean status) {
+        this.status = status;
+    }
+    
+    /**
      * Draw a ball icon on the given graphics with given scaler
      * @param g graphics that the icon is drawn on, mutated
      * @param scaler that the position and dimension is scaled,
      *        correspond with the value of L in the overall spec
      */
     public void drawIcon(final Graphics2D g, final int scaler) {
+        if (this.isActive()) {
         g.setColor(Color.BLUE);
         int displayX = (int) Math.round(ball.getCenter().x()*scaler);
         int displayY = (int) Math.round(ball.getCenter().y()*scaler);
         int displayRadius = (int) Math.round(ball.getRadius()*scaler);
         
         g.fillOval(displayX, displayY, displayRadius*2, displayRadius*2);
-        
+        }
     }
 }

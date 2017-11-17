@@ -113,9 +113,9 @@ class Wall implements Gadget {
     }
     
     @Override
-    public boolean trigger(List<Ball> balls) {
+    public boolean trigger(Ball ball, double deltaT) {
         // never triggered
-        return false;
+        return timeUntilCollision(ball) < deltaT;
     }
     
     @Override
@@ -130,7 +130,7 @@ class Wall implements Gadget {
         // no action
     }
 
-    public void drawIcon(Graphics2D g, int scaler, List<Ball> balls) {
+    public void drawIcon(Graphics2D g, int scaler, List<Ball> balls, double deltaT) {
         // not drawn
     }
 

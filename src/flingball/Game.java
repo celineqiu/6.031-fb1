@@ -1,7 +1,5 @@
 package flingball;
 
-import java.awt.Graphics;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +21,7 @@ public class Game {
     private final Map<Gadget, Gadget> interactions = new HashMap<>();
     
     private static final int TIMER_INTERVAL_MILLISECONDS = 50;
+    private static final double TIMER_INTERVAL= TIMER_INTERVAL_MILLISECONDS *0.001;
     
     // Abstract Function:
     //   AF(name, gravity, friction1, friction2, balls, gadgets, interactions)
@@ -88,12 +87,12 @@ public class Game {
         gadgets.add(bottom);
         
         for (Gadget gadget : gadgets) {
-            // TODO make a defensive copy of the gadget before storing it to prevent rep exposure
+            // make a defensive copy of the gadget before storing it to prevent rep exposure
             this.gadgets.put(gadget.name(), gadget.copy());
         }
         
         for (String triggerName: interactions.keySet()) {
-            // TODO make a defensive copy of the interactions before storing it to prevent rep exposure
+            // make a defensive copy of the interactions before storing it to prevent rep exposure
             Gadget triggerObject = this.gadgets.get(triggerName);
             Gadget actionObject = this.gadgets.get(interactions.get(triggerName));
             this.interactions.put(triggerObject.copy(), actionObject.copy());
@@ -188,12 +187,14 @@ public class Game {
      * Check for triggers at every frame of the Flingball Game.
      */
     public void checkTriggers() {
-        List<Ball> ballList = new ArrayList<>();
-        ballList.addAll(balls.values());
-        for (Gadget triggerObject: interactions.keySet()) {
-            if (triggerObject.trigger(ballList)) {
-                Gadget actionObject = interactions.get(triggerObject);
-                actionObject.action();
+        for (Gadget triggerObject : interactions.keySet()) {
+            for (Ball ball : balls.values()) {
+                if (ball.isActive()) {
+                    if (triggerObject.trigger(ball, TIMER_INTERVAL_MILLISECONDS)) {
+                        Gadget actionObject = interactions.get(triggerObject);
+                        actionObject.action();
+                    }
+                }
             }
         }
         checkRep();
@@ -203,35 +204,39 @@ public class Game {
      * Calculates Ball positions and velocities at every timestep.
      */
     public void updateBalls() {
+
         for (Ball ball : this.balls.values()) {
-            // initialize values
-            System.out.println("current velocity: " +ball.getVelocity());
-            // find closest object
-            for (Gadget gadget : this.gadgets.values()) {
-                Double time = gadget.timeUntilCollision(ball);
-                if (time < TIMER_INTERVAL_MILLISECONDS*0.001) {
-                    System.out.println("old velocity: " +ball.getVelocity());
-                    Vect newVel = gadget.velocityAfterCollision(ball);
-                    ball.setVelocity(newVel.x(), newVel.y());
-                    Vect displacement = new Vect(ball.getVelocity().x()*TIMER_INTERVAL_MILLISECONDS*0.001, ball.getVelocity().y()*TIMER_INTERVAL_MILLISECONDS*0.001 );
-                    System.out.println("new velocity: " +ball.getVelocity());
+            if (ball.isActive()) {
+                Boolean skipGravity = false;
+                // initialize values
+                System.out.println("current velocity: " +ball.getVelocity());
+                // find closest object
+                for (Gadget gadget : this.gadgets.values()) {
+                    if (gadget.trigger(ball, TIMER_INTERVAL)) {
+                        System.out.println("old velocity: " +ball.getVelocity());
+                        Vect newVel = gadget.velocityAfterCollision(ball);
+                        ball.setVelocity(newVel.x(), newVel.y());
+                        Vect displacement = new Vect(ball.getVelocity().x()*TIMER_INTERVAL, ball.getVelocity().y()*TIMER_INTERVAL);
+                        Vect newCenter = ball.getCenter().plus(displacement);
+                        ball.setCenter(newCenter.x(), newCenter.y());
+                        skipGravity = true;
+                    }
+                }
+                
+                if (!skipGravity) {
+                    // update position
+                    ball.gravity(this.gravity, TIMER_INTERVAL);
+                    ball.friction(this.friction1, this.friction2, TIMER_INTERVAL);
+                    
+                    // add a method for ball to update position given velocity and frame rate
+                    Vect displacement = new Vect(ball.getVelocity().x()*TIMER_INTERVAL, ball.getVelocity().y()*TIMER_INTERVAL);
                     Vect newCenter = ball.getCenter().plus(displacement);
+                    
                     ball.setCenter(newCenter.x(), newCenter.y());
-                    return; 
                 }
             }
-            
-            // update position
-            ball.gravity(this.gravity, TIMER_INTERVAL_MILLISECONDS*0.001);
-            ball.friction(this.friction1, this.friction2, TIMER_INTERVAL_MILLISECONDS*0.001);
-            
-            // add a method for ball to update position given velocity?
-            Vect displacement = new Vect(ball.getVelocity().x()*TIMER_INTERVAL_MILLISECONDS*0.001, ball.getVelocity().y()*TIMER_INTERVAL_MILLISECONDS*0.001 );
-            Vect newCenter = ball.getCenter().plus(displacement);
-            
-            ball.setCenter(newCenter.x(), newCenter.y());
-            checkTriggers();
         }
+        checkTriggers();
     }
     
     @Override
