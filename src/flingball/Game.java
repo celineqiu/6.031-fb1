@@ -20,7 +20,7 @@ public class Game {
     private final Map<String, Gadget> gadgets = new HashMap<>();
     private final Map<Gadget, Gadget> interactions = new HashMap<>();
     
-    private static final int TIMER_INTERVAL_MILLISECONDS = 50;
+    private static final int TIMER_INTERVAL_MILLISECONDS = 10;
     private static final double TIMER_INTERVAL = TIMER_INTERVAL_MILLISECONDS *0.001;
     
     // Abstract Function:
@@ -234,7 +234,7 @@ public class Game {
                 }
             }
         }
-        checkTriggers();
+//        checkTriggers();
         
     }
     

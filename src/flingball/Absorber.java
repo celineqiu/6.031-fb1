@@ -22,12 +22,12 @@ class Absorber implements Gadget {
     private final List<Ball> holdBalls = new LinkedList<>();
     private final List<LineSegment> edges = new ArrayList<>();
     private final List<Circle> corners = new ArrayList<>();
-    private final double HELD_BALL_OFFSET = 0.25;
+    private final double HELD_BALL_OFFSET = 0.5;
     private final List<Gadget> actionObjects = new ArrayList<>();
     
     
 //    private final Double INTERSECT = 0.25*0.25;
-//    private Ball ejected = new Ball("init", 10, 10, 0, 0);
+    private Ball ejected = new Ball("", 10, 10, 0, 0);
     
     // Abstract Function:
     //   AF(name, x, y, width, height, bottom, top, left, right, bottomLeft, bottomRight, topLeft, topRight,
@@ -304,12 +304,17 @@ class Absorber implements Gadget {
 //                }
 //            }
 //        return trigger;
-        if (timeUntilCollision(ball) < deltaT) {
-            ball.setCenter(this.x + this.width - HELD_BALL_OFFSET, this.y + this.height - HELD_BALL_OFFSET);
-            ball.setVelocity(0, 0);
-            ball.setActive(false);
-            this.holdBalls.add(ball);
-            return true;
+        if ((ball.equals(ejected) && !checkInside(ball)) || !ball.equals(ejected)) {
+            if (timeUntilCollision(ball) < deltaT) {
+                ball.setCenter(this.x + this.width - HELD_BALL_OFFSET, this.y + this.height - HELD_BALL_OFFSET);
+                ball.setVelocity(0, 0);
+                ball.setActive(false);
+                this.holdBalls.add(ball);
+                for (Gadget actionObject: actionObjects) {
+                    actionObject.action();
+                }
+                return true;
+            }
         }
         return false;   
         }
@@ -322,35 +327,35 @@ class Absorber implements Gadget {
             // if the ejected ball isn't the initialized ball OR
             // the ejected ball has left the absorber OR
             // the ejected ball is being held by the absorber again
-//  //          if (ejected.name().equals("init") || !(checkInside(ejected)) || holdBalls.contains(ejected)) {
+            if (ejected.name().equals("") || !(checkInside(ejected)) || holdBalls.contains(ejected)) {
                 Ball shoot = holdBalls.remove(0);
-                shoot.setCenter(this.x + this.width - HELD_BALL_OFFSET, this.y - 1);
+                ejected = shoot;
+//                shoot.setCenter(this.x + this.width - HELD_BALL_OFFSET, this.y - 1);
                 shoot.setVelocity(0, -50);
                 shoot.setActive(true);
                 System.out.println("stored ball below shoot: \n" + shoot);
                 
-                for (Gadget actionObject: actionObjects) {
-                    actionObject.action();
-                }
+     
                 
                 return;
   //              ejected = shoot;
 //  //          }
+            }
         }
         System.out.println("No stored balls");
         
     }
     
-//    private boolean checkInside(Ball ball) {
-//        // return true if ball is inside absorber
-//        // return false otherwise
-//        Vect center = ball.getCenter();
-//        if (center.x() >= x-0.25 && center.x() <= x+width+0.25 &&
-//            center.y() >= y-0.25 && center.y() <= y + height+0.25) {
-//            return true;
-//        }
-//        return false;
-//    }
+    private boolean checkInside(Ball ball) {
+        // return true if ball is inside absorber
+        // return false otherwise
+        Vect center = ball.getCenter();
+        if (center.x() >= x-0.25 && center.x() <= x+width+0.25 &&
+            center.y() >= y-0.25 && center.y() <= y + height+0.25) {
+            return true;
+        }
+        return false;
+    }
     
     @Override
     public Absorber copy() {
@@ -358,7 +363,7 @@ class Absorber implements Gadget {
     }
     
     @Override
-    public void drawIcon(Graphics2D g, final int scaler, List<Ball> bal, double deltaTls) {
+    public void drawIcon(Graphics2D g, final int scaler, List<Ball> balls, double deltaTls) {
         g.setColor(Color.GREEN);
         int displayX = (int) Math.round(x*scaler);
         int displayY = (int) Math.round(y*scaler);
