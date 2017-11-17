@@ -114,12 +114,6 @@ class CircleBumper implements Gadget {
     
     @Override
     public boolean trigger(Ball ball, double deltaT) {
-//        for (Ball ball : balls) {
-//            Double distSquared = Physics.distanceSquared(circle.getCenter(), ball.getCenter()); 
-//            if (distSquared <= INTERSECT) {
-//                return true;
-//            } 
-//        }
         if (timeUntilCollision(ball) < deltaT) {
             Vect newVel = this.velocityAfterCollision(ball);
             ball.setVelocity(newVel.x(), newVel.y());
@@ -151,7 +145,7 @@ class CircleBumper implements Gadget {
         
         g.setColor(Color.PINK); 
         for (Ball ball : balls) {
-        if (trigger(ball, deltaT))  g.setColor(Color.YELLOW);
+            if (trigger(ball, deltaT))  g.setColor(Color.YELLOW);
         }
 
         int displayX = (int) Math.round(x*scaler);

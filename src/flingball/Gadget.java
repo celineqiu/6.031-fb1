@@ -53,7 +53,7 @@ public interface Gadget {
      * position and dimension scaled.
      * @param g Graphics to be drawn on, mutated
      * @param scaler coefficient that helps turning Gadget size into values;
-     * @param list of balls
+     * @param balls list of balls
      * @param deltaT timestep of drawing the icon
      */
     public void drawIcon(Graphics2D g, int scaler, List<Ball> balls, double deltaT);
@@ -92,6 +92,5 @@ public interface Gadget {
      * @param actionObject the object that gets added
      */
     public void addActionObject(Gadget actionObject);
-    
-    
+
 }

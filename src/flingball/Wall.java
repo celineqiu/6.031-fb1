@@ -141,7 +141,8 @@ class Wall implements Gadget {
     public void action() {
         // no action
     }
-
+    
+    @Override
     public void drawIcon(Graphics2D g, int scaler, List<Ball> balls, double deltaT) {
         // not drawn
     }

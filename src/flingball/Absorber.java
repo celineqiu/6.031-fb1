@@ -24,9 +24,6 @@ class Absorber implements Gadget {
     private final List<Circle> corners = new ArrayList<>();
     private final double HELD_BALL_OFFSET = 0.5;
     private final List<Gadget> actionObjects = new ArrayList<>();
-    
-    
-//    private final Double INTERSECT = 0.25*0.25;
     private Ball ejected = new Ball("", 10, 10, 0, 0);
     
     // Abstract Function:
@@ -105,9 +102,7 @@ class Absorber implements Gadget {
         assert(topLeft.getCenter().equals(top.p1()) && topRight.getCenter().equals(top.p2()));
         assert(bottomLeft.getCenter().equals(left.p1()) && topLeft.getCenter().equals(left.p2()));
         assert(topRight.getCenter().equals(right.p1()) && bottomRight.getCenter().equals(right.p2()));
-        
-        // TODO
-    }
+        }
     
     @Override
     public String name() {
@@ -265,45 +260,6 @@ class Absorber implements Gadget {
     
     @Override
     public boolean trigger(Ball ball, double deltaT) {
-//        boolean trigger = false;
-//        for (Ball ball : balls) {
-            // TODO is this enough to make sure it doesn't keep triggering
-            // the absorber as the ball exits the absorber
-//            if (!(holdBalls.contains(ball))) {
-//                if (ball.equals(ejected) && checkInside(ball)) {
-//                    // if this is the ejected ball and it hasn't
-//                    // left the absorber, then ignore
-//                    continue;
-//                } 
-//                for (Circle corner : corners) {
-//                    Double distSquared = Physics.distanceSquared(corner.getCenter(), ball.getCenter()); 
-//                    if (distSquared <= INTERSECT) {
-//                        trigger = true;
-//                        // set ball to 0.25 to left and right of bottom right corner
-//                        ball.setCenter(bottomRight.getCenter().x()-0.25, bottomRight.getCenter().y()-0.25);
-//                        ball.setVelocity(0, 0);
-//                    }
-//                }
-//                for (LineSegment edge : edges) {
-//                    Vect closestPoint = Physics.perpendicularPoint(edge, ball.getCenter());
-//                    Double distSquared = Physics.distanceSquared(closestPoint, ball.getCenter());
-//                    if (distSquared <= INTERSECT) {
-//                        trigger = true;
-//                        // set ball to 0.25 to left and right of bottom right corner
-//                        ball.setCenter(bottomRight.getCenter().x()-0.25, bottomRight.getCenter().y()-0.25);
-//                        ball.setVelocity(0, 0);
-//                    }
-//                // TODO determine if necessary
-//                // in case a ball moves too fast and is already inside
-//                if (checkInside(ball)) {
-//                    trigger = true;
-//                    // set ball to 0.25 to left and right of bottom right corner
-//                    ball.setCenter(bottomRight.getCenter().x()-0.25, bottomRight.getCenter().y()-0.25);
-//                    ball.setVelocity(0, 0);
-//                    } 
-//                }
-//            }
-//        return trigger;
         if ((ball.equals(ejected) && !checkInside(ball)) || !ball.equals(ejected)) {
             if (timeUntilCollision(ball) < deltaT) {
                 ball.setCenter(this.x + this.width - HELD_BALL_OFFSET, this.y + this.height - HELD_BALL_OFFSET);
@@ -330,7 +286,6 @@ class Absorber implements Gadget {
             if (ejected.name().equals("") || !(checkInside(ejected)) || holdBalls.contains(ejected)) {
                 Ball shoot = holdBalls.remove(0);
                 ejected = shoot;
-//                shoot.setCenter(this.x + this.width - HELD_BALL_OFFSET, this.y - 1);
                 shoot.setVelocity(0, -50);
                 shoot.setActive(true);
                 System.out.println("stored ball below shoot: \n" + shoot);
@@ -338,8 +293,6 @@ class Absorber implements Gadget {
      
                 
                 return;
-  //              ejected = shoot;
-//  //          }
             }
         }
         System.out.println("No stored balls");

@@ -20,10 +20,10 @@ public class Game {
     private final Map<String, Gadget> gadgets = new HashMap<>();
     private final Map<Gadget, Gadget> interactions = new HashMap<>();
     
-    private static final int TIMER_INTERVAL_MILLISECONDS = 10;
+    private static final int TIMER_INTERVAL_MILLISECONDS = 50;
     private static final double TIMER_INTERVAL = TIMER_INTERVAL_MILLISECONDS *0.001;
     
-    // Abstract Function:
+    // Abstraction Function:
     //   AF(name, gravity, friction1, friction2, balls, gadgets, interactions)
     //     = a Flingball Game named name with gravity, friction1 and friction2 constants, 
     //       balls and gadgets in the playing area
@@ -96,8 +96,6 @@ public class Game {
             this.interactions.put(triggerObject, actionObject);
             triggerObject.addActionObject(actionObject);
         }
-        
-        
         
         checkRep();
     }
@@ -233,9 +231,7 @@ public class Game {
                     ball.setCenter(newCenter.x(), newCenter.y());
                 }
             }
-        }
-//        checkTriggers();
-        
+        }        
     }
     
     @Override
@@ -299,6 +295,4 @@ public class Game {
                 + this.gadgets.hashCode()
                 + this.interactions.hashCode();
     }
-    
-    
 }

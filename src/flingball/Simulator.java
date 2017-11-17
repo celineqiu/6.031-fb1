@@ -49,15 +49,6 @@ public class Simulator {
         }).start();
     }
     
-// Not used for now, since we are drawing gadgets per frame
-//    /**
-//     * Initialize the game board animation. Adds the various gadgets (bumpers) to the window.
-//     */
-//    private static void initializeGame() {
-//    }
-    
-
-    
     /**
      * Animate the balls moving around the game board.
      * @param g graphics for the drawing buffer for the window.  Modifies this graphics by drawing the balls on it, at a 
@@ -74,12 +65,8 @@ public class Simulator {
             ball.drawIcon(g2, PIXELS_PER_L);
         }
         
-
         for (Gadget gadget : this.game.gadgets().values()) {
             gadget.drawIcon(g2, PIXELS_PER_L, new ArrayList<Ball>(this.game.balls().values()), TIMER_INTERVAL_MILLISECONDS*0.001);
-        }
-        
-        
-        
+        }   
     }
 }

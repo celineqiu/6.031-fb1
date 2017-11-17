@@ -19,7 +19,6 @@ class Ball {
     //   AF(ball, velocity) = ball of diameter 0.5L with a velocity in the Flingball playing area  
     // Rep invariant:
     //   diameter is 0.5L
-    ////   velocities must range at least from 0 L/sec to 200 L/sec 
     //   ball must be within the playing area
     // Safety from rep exposure:
     //   fields are final
@@ -46,8 +45,6 @@ class Ball {
      * Check that the rep invariant is satisfied.
      */
     private void checkRep() {
-//        Double magSquared = velocity.dot(velocity);
-//        assert(magSquared >= 0 && magSquared <= 400) : "magSquared MulticastChannel be between 0 and 400";
         assert(ball.getRadius() == 0.25) : "radius must be equal to 0.25";
         Vect center = ball.getCenter();
         assert(center.x() >= 0.25 && center.x() <= 19.75) : "ball x pos must be in playing area";
@@ -118,7 +115,6 @@ class Ball {
      * frictional constants friction1 and friction2 (mu and mu2).
      */
     public void friction(double friction1, double friction2, double deltaT) {
-        // Vnew = Vold × ( 1 - mu × deltat - mu2 × |Vold| × deltat )
         Double scale = 1 - friction1*deltaT - friction2 * velocity.length()*deltaT;
         Vect newVel = velocity.times(scale);
         setVelocity(newVel.x(), newVel.y());
