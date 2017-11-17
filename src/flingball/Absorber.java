@@ -24,7 +24,7 @@ class Absorber implements Gadget {
     private final List<LineSegment> edges = new ArrayList<>();
     private final List<Circle> corners = new ArrayList<>();
     private final Double INTERSECT = 0.25*0.25;
-    private Ball ejected = new Ball("init", 0, 0, 0, 0);
+    private Ball ejected = new Ball("init", 10, 10, 0, 0);
     
     // Abstract Function:
     //   AF(name, x, y, width, height, bottom, top, left, right, bottomLeft, bottomRight, topLeft, topRight,

@@ -88,8 +88,8 @@ class Wall implements Gadget {
     @Override 
     public String toString() {
         String toStr = "name: " + this.name + "\n" +
-                       "start: (" + this.line.p1().x() + "," + this.line.p1().y() + ")" + "\n" +
-                       "end: (" + this.line.p2().x() + "," + this.line.p2().y() + ")";
+                       "start: (" + (int) this.line.p1().x() + "," + (int) this.line.p1().y() + ")" + "\n" +
+                       "end: (" + (int) this.line.p2().x() + "," + (int) this.line.p2().y() + ")";
         return toStr;
     }
     

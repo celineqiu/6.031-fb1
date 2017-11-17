@@ -83,7 +83,7 @@ class CircleBumper implements Gadget {
     @Override 
     public String toString() {
         String toStr = "name: " + this.name + "\n" +
-                       "origin: " + this.x + ", " + this.y;
+                       "origin: (" + this.x + "," + this.y + ")";
         return toStr;
     }
     

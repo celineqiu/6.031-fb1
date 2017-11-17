@@ -191,10 +191,10 @@ class SquareBumper implements Gadget {
     @Override 
     public String toString() {
         String toStr = "name: " + this.name + "\n" +
-                        "(" + this.topLeft.getCenter().x() + "," + this.topLeft.getCenter().y() + ")," + "\n" +
-                        "(" + this.topRight.getCenter().x() + "," + this.topRight.getCenter().y() + ")," + "\n" +
-                        "(" + this.bottomRight.getCenter().x() + "," + this.bottomRight.getCenter().y() + ")," + "\n" +
-                        "(" + this.bottomLeft.getCenter().x() + "," + this.bottomLeft.getCenter().y() + ")";
+                        "top left: (" + (int) this.topLeft.getCenter().x() + "," + (int) this.topLeft.getCenter().y() + ")," + "\n" +
+                        "top right: (" + (int) this.topRight.getCenter().x() + "," + (int) this.topRight.getCenter().y() + ")," + "\n" +
+                        "bottom right: (" + (int) this.bottomRight.getCenter().x() + "," + (int) this.bottomRight.getCenter().y() + ")," + "\n" +
+                        "bottom left: (" + (int) this.bottomLeft.getCenter().x() + "," + (int) this.bottomLeft.getCenter().y() + ")";
         return toStr;
     }
     
