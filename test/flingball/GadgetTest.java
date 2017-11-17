@@ -164,7 +164,11 @@ public class GadgetTest {
         assertEquals("expected same corners", expectedCorners, abs.getCorners());
     }
     
-    // CircleBumper tests
+    // covers CircleBumper
+    //     all general methods of gadget
+    //     specific methods of CircleBumper
+    //          getOrigin
+    //          getCircle
     
     @Test
     public void testGetOriginCircleBumper() {
@@ -187,7 +191,15 @@ public class GadgetTest {
         assertEquals("expected same name", expected, circle.name());
     }
     
-    // TODO addActionObject
+    @Test
+    public void testAddActionObject() {
+        Absorber abs = new Absorber("absorber", 0, 0, 5, 5);
+        List<Gadget> expected = new ArrayList<>();
+        expected.add(abs);
+        CircleBumper circle = new CircleBumper("circle", 10, 10);
+        circle.addActionObject(abs);
+        assertEquals("expected same action objects", expected, circle.getActionObjects());
+    }
     
     @Test
     public void testTimeUntilCollisionCircleBumper() {
@@ -289,7 +301,11 @@ public class GadgetTest {
         assertEquals("expected same string", expected, triangle.toString());
     }
     
-    // Wall
+    // covers Wall
+    //     all general methods of gadget
+    //     specific methods of Absorber
+    //          getLine
+    //          getCorner
     
     @Test
     public void testWall() {
@@ -341,7 +357,4 @@ public class GadgetTest {
         Wall wall = new Wall("left", 0, 0, 0, 20);
         assertEquals("expected same string", expected, wall.toString());
     }
-    
-    
-
 }
