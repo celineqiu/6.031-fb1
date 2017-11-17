@@ -23,7 +23,7 @@ circleBumper name=CircleG x=10 y=19
 absorber name=Abs1 x=0 y=18 width=10 height=2
 absorber name=Abs2 x=11 y=18 width=9 height=2
 
-# the row of circles triggers absorber1 
+# the row of circles triggers absorber1
 fire trigger=CircleA action=Abs1
 fire trigger=CircleB action=Abs1
 fire trigger=CircleC action=Abs1

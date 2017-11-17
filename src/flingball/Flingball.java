@@ -5,11 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.Scanner;
-
-import javax.management.monitor.GaugeMonitor;
 
 import edu.mit.eecs.parserlib.UnableToParseException;
 

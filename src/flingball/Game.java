@@ -21,7 +21,7 @@ public class Game {
     private final Map<Gadget, Gadget> interactions = new HashMap<>();
     
     private static final int TIMER_INTERVAL_MILLISECONDS = 50;
-    private static final double TIMER_INTERVAL= TIMER_INTERVAL_MILLISECONDS *0.001;
+    private static final double TIMER_INTERVAL = TIMER_INTERVAL_MILLISECONDS *0.001;
     
     // Abstract Function:
     //   AF(name, gravity, friction1, friction2, balls, gadgets, interactions)
@@ -70,9 +70,8 @@ public class Game {
         this.friction1 = friction1;
         this.friction2 = friction2;
 
-        
         for (Ball ball : balls) {
-            // TODO? make a defensive copy of the ball before storing it to prevent rep exposure
+            // make a defensive copy of the ball before storing it to prevent rep exposure
             this.balls.put(ball.name(), ball.copy());
         }
         
@@ -88,14 +87,13 @@ public class Game {
         
         for (Gadget gadget : gadgets) {
             // make a defensive copy of the gadget before storing it to prevent rep exposure
-            this.gadgets.put(gadget.name(), gadget.copy());
+            this.gadgets.put(gadget.name(), gadget);
         }
         
         for (String triggerName: interactions.keySet()) {
-            // make a defensive copy of the interactions before storing it to prevent rep exposure
             Gadget triggerObject = this.gadgets.get(triggerName);
             Gadget actionObject = this.gadgets.get(interactions.get(triggerName));
-            this.interactions.put(triggerObject.copy(), actionObject.copy());
+            this.interactions.put(triggerObject, actionObject);
             triggerObject.addActionObject(actionObject);
         }
         
@@ -193,7 +191,7 @@ public class Game {
         for (Gadget triggerObject : interactions.keySet()) {
             for (Ball ball : balls.values()) {
                 if (ball.isActive()) {
-                    if (triggerObject.trigger(ball, TIMER_INTERVAL_MILLISECONDS)) {
+                    if (triggerObject.trigger(ball, TIMER_INTERVAL)) {
                         
                         Gadget actionObject = interactions.get(triggerObject);
                         

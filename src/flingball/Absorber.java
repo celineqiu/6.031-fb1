@@ -341,16 +341,16 @@ class Absorber implements Gadget {
         
     }
     
-  //  private boolean checkInside(Ball ball) {
-  //      // return true if ball is inside absorber
-  //      // return false otherwise
-  //      Vect center = ball.getCenter();
-  //      if (center.x() >= x-0.25 && center.x() <= x+width+0.25 &&
-  //          center.y() >= y-0.25 && center.y() <= y + height+0.25) {
-  //          return true;
-  //      }
-  //      return false;
-  //  }
+//    private boolean checkInside(Ball ball) {
+//        // return true if ball is inside absorber
+//        // return false otherwise
+//        Vect center = ball.getCenter();
+//        if (center.x() >= x-0.25 && center.x() <= x+width+0.25 &&
+//            center.y() >= y-0.25 && center.y() <= y + height+0.25) {
+//            return true;
+//        }
+//        return false;
+//    }
     
     @Override
     public Absorber copy() {
@@ -358,7 +358,7 @@ class Absorber implements Gadget {
     }
     
     @Override
-    public void drawIcon(Graphics2D g, final int scaler, List<Ball> balls, double deltaT) {
+    public void drawIcon(Graphics2D g, final int scaler, List<Ball> bal, double deltaTls) {
         g.setColor(Color.GREEN);
         int displayX = (int) Math.round(x*scaler);
         int displayY = (int) Math.round(y*scaler);

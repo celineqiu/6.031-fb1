@@ -19,7 +19,7 @@ class Ball {
     //   AF(ball, velocity) = ball of diameter 0.5L with a velocity in the Flingball playing area  
     // Rep invariant:
     //   diameter is 0.5L
-    //   velocities must range at least from 0 L/sec to 200 L/sec 
+    ////   velocities must range at least from 0 L/sec to 200 L/sec 
     //   ball must be within the playing area
     // Safety from rep exposure:
     //   fields are final
@@ -33,6 +33,9 @@ class Ball {
      * @param yVelocity y value of the ball velocity
      */
     public Ball(String name, double x, double y, double xVelocity, double yVelocity) {
+        System.out.println(name);
+        System.out.println("ball x coord: " + x);
+        System.out.println("ball y coord: " + y);
         this.name = name;
         this.ball = new Circle(x, y, 0.25);
         this.velocity = new Vect(xVelocity, yVelocity);
@@ -43,12 +46,12 @@ class Ball {
      * Check that the rep invariant is satisfied.
      */
     private void checkRep() {
-        Double magSquared = velocity.dot(velocity);
-        assert(magSquared >= 0 && magSquared <= 400) : "magSquared MulticastChannel be between 0 and 400";
+//        Double magSquared = velocity.dot(velocity);
+//        assert(magSquared >= 0 && magSquared <= 400) : "magSquared MulticastChannel be between 0 and 400";
         assert(ball.getRadius() == 0.25) : "radius must be equal to 0.25";
         Vect center = ball.getCenter();
-        assert(center.x() >= 0.25 && center.x() <= 19.75);
-        assert(center.y() >= 0.25 && center.y() <=19.75);
+        assert(center.x() >= 0.25 && center.x() <= 19.75) : "ball x pos must be in playing area";
+        assert(center.y() >= 0.25 && center.y() <= 19.75) : "ball y pos must be in playing area";
     }
     
     /**
