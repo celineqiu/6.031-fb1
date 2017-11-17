@@ -1,19 +1,17 @@
 package flingball;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import physics.Physics;
-
 import physics.Circle;
 import physics.LineSegment;
+import physics.Physics;
 import physics.Vect;
 
 
@@ -291,6 +289,50 @@ public class GadgetTest {
         assertEquals("expected same string", expected, triangle.toString());
     }
     
+    // Wall
+    
+    @Test
+    public void testWall() {
+        Wall wall = new Wall("top", 0, 0, 20, 0);
+        
+        // name()
+        String name = "top";
+        assertEquals("expected same name", name, wall.name());
+        
+        // getLine()
+        LineSegment line = new LineSegment(0, 0, 20, 0);
+        assertEquals("expected same line segment", line, wall.getLine());
+        
+        // getCorner()
+        Circle corner = new Circle(0, 0, 0);
+        assertEquals("expected same corner", corner, wall.getCorner());
+        
+        // timeUntilCollision()
+        Circle ballCenter = new Circle(10, 10, 0.25);
+        Vect ballVel = new Vect(0, -1);
+        Ball ball = new Ball("ball", 10, 10, 0, -1);
+        Double time = Physics.timeUntilWallCollision(line, ballCenter, ballVel);
+        assertEquals("expected same time", time, wall.timeUntilCollision(ball));
+        
+        // velocityAfterCollision()
+        Vect vel = Physics.reflectWall(line, ballVel);
+        assertEquals("expected same velocity", vel, wall.velocityAfterCollision(ball));
+        
+        // equals()
+        Wall wallCopy = new Wall("top", 0, 0, 20, 0);
+        assertTrue("expected equal", wall.equals(wallCopy));
+        
+        // hashCode()
+        assertEquals("expected same hash code", wall.hashCode(), wallCopy.hashCode());
+        
+        // trigger()
+        assertTrue("expected triggered", wall.trigger(ball, 15));
+        assertFalse("expected not triggered", wall.trigger(ball, 3));
+        
+        // copy()
+        assertEquals("expected same wall", wall, wall.copy());
+    }
+    
     @Test
     public void testToStringWall() {
         String expected = "name: left" + "\n" +
@@ -299,5 +341,7 @@ public class GadgetTest {
         Wall wall = new Wall("left", 0, 0, 0, 20);
         assertEquals("expected same string", expected, wall.toString());
     }
+    
+    
 
 }
