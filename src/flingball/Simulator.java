@@ -74,6 +74,7 @@ public class Simulator {
             ball.drawIcon(g2, PIXELS_PER_L);
         }
         
+
         for (Gadget gadget : this.game.gadgets().values()) {
             gadget.drawIcon(g2, PIXELS_PER_L, new ArrayList<Ball>(this.game.balls().values()));
         }
