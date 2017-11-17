@@ -21,6 +21,7 @@ class Absorber implements Gadget {
     private final List<Ball> holdBalls = new ArrayList<>();
     private final List<LineSegment> edges = new ArrayList<>();
     private final List<Circle> corners = new ArrayList<>();
+    private final Double INTERSECT = 0.25*0.25;
     
     // Abstract Function:
     //   AF(name, x, y, width, height, bottom, top, left, right, bottomLeft, bottomRight, topLeft, topRight) 
@@ -250,7 +251,26 @@ class Absorber implements Gadget {
     
     @Override
     public boolean trigger(List<Ball> balls) {
-         // TODO
+        boolean trigger = false;
+        for (Ball ball : balls) {
+            for (Circle corner : corners) {
+                Double distSquared = Physics.distanceSquared(corner.getCenter(), ball.getCenter()); 
+                if (distSquared <= INTERSECT) {
+                    trigger = true;
+                    // TODO add ball to absorber
+                }
+            }
+            for (LineSegment edge : edges) {
+                Vect closestPoint = Physics.perpendicularPoint(edge, ball.getCenter());
+                Double distSquared = Physics.distanceSquared(closestPoint, ball.getCenter());
+                if (distSquared <= INTERSECT) {
+                    trigger = true;
+                    // TODO add ball to absorber
+                }
+                
+            }
+        }
+        return trigger;
     }
     
     @Override

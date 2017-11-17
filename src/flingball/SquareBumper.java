@@ -20,6 +20,7 @@ class SquareBumper implements Gadget {
     private final Circle bottomLeft, bottomRight, topLeft, topRight;
     private final List<LineSegment> edges = new ArrayList<>();
     private final List<Circle> corners = new ArrayList<>();
+    private final Double INTERSECT = 0.25*0.25;
     
     // Abstract Function:
     //   AF(name, x, y, bottom, top, left, right, bottomLeft, bottomRight, topLeft, topRight, edges, corner) 
@@ -220,7 +221,23 @@ class SquareBumper implements Gadget {
     
     @Override
     public boolean trigger(List<Ball> balls) {
-        // TODO
+        for (Ball ball : balls) {
+            for (Circle corner : corners) {
+                Double distSquared = Physics.distanceSquared(corner.getCenter(), ball.getCenter()); 
+                if (distSquared <= INTERSECT) {
+                    return true;
+                } 
+            }
+            for (LineSegment edge : edges) {
+                Vect closestPoint = Physics.perpendicularPoint(edge, ball.getCenter());
+                Double distSquared = Physics.distanceSquared(closestPoint, ball.getCenter());
+                if (distSquared <= INTERSECT) {
+                    return true;
+                }
+                
+            }
+        }
+        return false;
     }
     
     @Override

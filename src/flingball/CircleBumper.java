@@ -15,6 +15,7 @@ class CircleBumper implements Gadget {
     private final String name;
     private final int x, y;
     private final Circle circle;
+    private final Double INTERSECT = 0.75*0.75;
     
     // Abstract Function:
     //   AF(name, circle) = Circle bumper represented as a circle named name with 
@@ -107,7 +108,13 @@ class CircleBumper implements Gadget {
     
     @Override
     public boolean trigger(List<Ball> balls) {
-        // TODO
+        for (Ball ball : balls) {
+            Double distSquared = Physics.distanceSquared(circle.getCenter(), ball.getCenter()); 
+            if (distSquared <= INTERSECT) {
+                return true;
+            } 
+        }
+        return false;
     }
     
     @Override

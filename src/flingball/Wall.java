@@ -1,4 +1,5 @@
 package flingball;
+import java.awt.Graphics2D;
 import java.util.List;
 
 import physics.Circle;
@@ -127,6 +128,10 @@ class Wall implements Gadget {
     @Override
     public void action() {
         // no action
+    }
+
+    public void drawIcon(Graphics2D g, int scaler, List<Ball> balls) {
+        // not drawn
     }
 
 }
