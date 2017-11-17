@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -74,7 +75,7 @@ public class Simulator {
         }
         
         for (Gadget gadget : this.game.gadgets().values()) {
-            gadget.drawIcon(g2, PIXELS_PER_L);
+            gadget.drawIcon(g2, PIXELS_PER_L, new ArrayList<Ball>(this.game.balls().values()));
         }
         
         

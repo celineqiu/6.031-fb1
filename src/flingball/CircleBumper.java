@@ -130,16 +130,16 @@ class CircleBumper implements Gadget {
     @Override
     public void drawIcon(Graphics2D g, final int scaler, List<Ball> balls) {
         
-        if (trigger(balls)) {
-            g.setColor(Color.YELLOW);
-        }else {
-            g.setColor(Color.RED); 
-        }
+//        if (trigger(balls)) {
+//            g.setColor(Color.YELLOW);
+//        }else {
+            g.setColor(Color.GREEN); 
+//        }
         
         int displayX = (int) Math.round(x*scaler);
         int displayY = (int) Math.round(y*scaler);
         int displayRadius = (int) Math.round(circle.getRadius()*scaler);
         
-        g.fillRect(displayX, displayY, displayRadius, displayRadius);
+        g.fillOval(displayX, displayY, displayRadius*2, displayRadius*2);
     }
 }

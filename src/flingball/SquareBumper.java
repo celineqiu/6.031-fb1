@@ -255,11 +255,11 @@ class SquareBumper implements Gadget {
         final int width = 1;
         final int height = 1;
         
-        if (trigger(balls)) {
-            g.setColor(Color.YELLOW);
-        }else {
+//        if (trigger(balls)) {
+//            g.setColor(Color.YELLOW);
+//        }else {
             g.setColor(Color.RED); 
-        }
+//        }
         
         int displayX = (int) Math.round(x*scaler);
         int displayY = (int) Math.round(y*scaler);

@@ -1,5 +1,6 @@
 package flingball;
 
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,8 @@ public class Game {
     private final Map<String, Ball> balls = new HashMap<>();
     private final Map<String, Gadget> gadgets = new HashMap<>();
     private final Map<Gadget, Gadget> interactions = new HashMap<>();
+    
+    private static final int TIMER_INTERVAL_MILLISECONDS = 50;
     
     // Abstract Function:
     //   AF(name, gravity, friction1, friction2, balls, gadgets, interactions)
@@ -96,6 +99,20 @@ public class Game {
         }
         
         checkRep();
+    }
+    
+    /**
+     * Start running the game
+     */
+    public void run() {
+        try {
+            //while (true) {
+                updateBalls();
+                Thread.sleep(TIMER_INTERVAL_MILLISECONDS);
+            //}
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
     
     /**
@@ -185,11 +202,15 @@ public class Game {
      * Calculates Ball positions and velocities at every timestep.
      */
     public void updateBalls() {
+        System.out.println("updateBalls START");
         while (true) {  
             for (Ball ball : this.balls.values()) {
                 // initialize values
                 Double minTime = Double.MAX_VALUE;
                 Vect newVel = ball.getVelocity();
+                ball.gravity(this.gravity);
+                ball.friction(this.friction1, this.friction2);
+                ball.setVelocity(newVel.x(), newVel.y());
                 
                 // find closest object
                 for (Gadget gadget : this.gadgets.values()) {
@@ -199,6 +220,7 @@ public class Game {
                         newVel = gadget.velocityAfterCollision(ball);
                     }
                 }
+                System.out.println("Min Time is " + minTime);
                 
                 for (int i = 0; i < minTime-1; i++) {
                     // update position
@@ -206,15 +228,19 @@ public class Game {
                     ball.friction(this.friction1, this.friction2);
                     // add a method for ball to update position given velocity?
                     Vect newCenter = ball.getCenter().plus(ball.getVelocity());
+                    
                     ball.setCenter(newCenter.x(), newCenter.y());
                     checkTriggers();
                 }
 
                 // update position so ball collides & set post collision velocity
                 ball.gravity(this.gravity);
+                System.out.println("gravity is " + this.gravity);
                 ball.friction(this.friction1, this.friction2);
+                
                 // add a method for ball to update position given velocity?
                 Vect newCenter = ball.getCenter().plus(ball.getVelocity().times(minTime % 1));
+                System.out.println("new Center is "+newCenter);
                 ball.setCenter(newCenter.x(), newCenter.y());
                 ball.setVelocity(newVel.x(), newVel.y());
                 checkTriggers();

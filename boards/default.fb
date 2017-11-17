@@ -1,7 +1,7 @@
 board name=Default gravity = 25.0
 
 # define a ball
-ball name=BallA x=1.25 y=1.25 xVelocity=0 yVelocity=0
+ball name=BallA x=1.25 y=1.25 xVelocity=1 yVelocity=1
 
 # define a series of square bumpers
 squareBumper name=SquareA x=0 y=17

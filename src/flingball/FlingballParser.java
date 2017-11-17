@@ -100,7 +100,7 @@ public class FlingballParser {
         final ParseTree<FlingballGrammar> parseTree = parser.parse(string);
         //System.out.println("parse tree " + parseTree);
 
-        Visualizer.showInBrowser(parseTree);
+       // Visualizer.showInBrowser(parseTree);
 
         final Game game = makeGameAST(parseTree);
         // Return empty game for testing perpose

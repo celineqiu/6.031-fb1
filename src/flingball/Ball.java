@@ -158,13 +158,19 @@ class Ball {
                         velocity.x(), velocity.y());
     }
     
+    /**
+     * Draw a ball icon on the given graphics with given scaler
+     * @param g graphics that the icon is drawn on, mutated
+     * @param scaler that the position and dimension is scaled,
+     *        correspond with the value of L in the overall spec
+     */
     public void drawIcon(final Graphics2D g, final int scaler) {
         g.setColor(Color.BLUE);
         int displayX = (int) Math.round(ball.getCenter().x()*scaler);
         int displayY = (int) Math.round(ball.getCenter().y()*scaler);
         int displayRadius = (int) Math.round(ball.getRadius()*scaler);
         
-        g.fillOval(displayX, displayY, displayRadius, displayRadius);
+        g.fillOval(displayX, displayY, displayRadius*2, displayRadius*2);
         
     }
 }

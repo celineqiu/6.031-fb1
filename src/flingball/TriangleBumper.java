@@ -280,15 +280,12 @@ class TriangleBumper implements Gadget {
     }
 
     @Override
-    public void drawIcon(Graphics2D g, final int scaler, List<Ball> balls) {
-        final int width = 1;
-        final int height = 1;
-        
-        if (trigger(balls)) {
-            g.setColor(Color.YELLOW);
-        }else {
+    public void drawIcon(Graphics2D g, final int scaler, List<Ball> balls) {        
+//        if (trigger(balls)) {
+//            g.setColor(Color.YELLOW);
+//        }else {
             g.setColor(Color.ORANGE); 
-        }
+//        }
         
         final int[] xValues = new int[] {
                 (int) Math.round(cornerA.getCenter().x()*scaler),
@@ -297,9 +294,9 @@ class TriangleBumper implements Gadget {
         };
         
         final int[] yValues = new int[] {
-                (int) Math.round(cornerA.getCenter().x()*scaler),
-                (int) Math.round(cornerB.getCenter().x()*scaler),
-                (int) Math.round(rightAngleCorner.getCenter().x()*scaler)                   
+                (int) Math.round(cornerA.getCenter().y()*scaler),
+                (int) Math.round(cornerB.getCenter().y()*scaler),
+                (int) Math.round(rightAngleCorner.getCenter().y()*scaler)                   
         };
         
         final int nPoints = 3;
