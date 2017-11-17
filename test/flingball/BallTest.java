@@ -104,8 +104,8 @@ public class BallTest {
     @Test
     public void testGravity() {
         Ball ball = new Ball("ball", 10, 10, 3.6, 4.2);
-        Vect expected = new Vect(3.6, 3.9);
-        ball.gravity(0.3);
+        Vect expected = new Vect(3.6, 4.5);
+        ball.gravity(0.3,1);
         // weird issue with doubles
         Vect difference = ball.getVelocity().minus(expected);
         assertTrue("expected low error", difference.length() < 0.00000001);
@@ -115,7 +115,7 @@ public class BallTest {
     public void testFriction() {
         Ball ball = new Ball("ball", 10, 10, 3, 4);
         Vect expected = new Vect(1.5, 2);
-        ball.friction(0.25, 0.05);
+        ball.friction(0.25, 0.05,1);
         assertEquals("expected changed velocity", expected, ball.getVelocity());
     }
 }
