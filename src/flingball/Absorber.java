@@ -3,9 +3,8 @@ package flingball;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import physics.Circle;
 import physics.LineSegment;
@@ -20,10 +19,12 @@ class Absorber implements Gadget {
     private final int x, y, width, height;
     private final LineSegment bottom, top, left, right;
     private final Circle bottomLeft, bottomRight, topLeft, topRight;
-    private final List<Ball> holdBalls = new ArrayList<>();
+    private final List<Ball> holdBalls = new LinkedList<>();
     private final List<LineSegment> edges = new ArrayList<>();
     private final List<Circle> corners = new ArrayList<>();
     private final double HELD_BALL_OFFSET = 0.25;
+    private final List<Gadget> actionObjects = new ArrayList<>();
+    
     
 //    private final Double INTERSECT = 0.25*0.25;
 //    private Ball ejected = new Ball("init", 10, 10, 0, 0);
@@ -111,6 +112,11 @@ class Absorber implements Gadget {
     @Override
     public String name() {
         return this.name;
+    }
+    
+    @Override
+    public void addActionObject(Gadget actionObject) {
+        actionObjects.add(actionObject);
     }
     
     /**
@@ -299,28 +305,40 @@ class Absorber implements Gadget {
 //            }
 //        return trigger;
         if (timeUntilCollision(ball) < deltaT) {
-            ball.setCenter(this.width - HELD_BALL_OFFSET, this.height - HELD_BALL_OFFSET);
+            ball.setCenter(this.x + this.width - HELD_BALL_OFFSET, this.y + this.height - HELD_BALL_OFFSET);
             ball.setVelocity(0, 0);
             ball.setActive(false);
             this.holdBalls.add(ball);
             return true;
         }
-        return false;   }
+        return false;   
+        }
     
     @Override
     public void action() {
         // if there are balls to eject
         if (holdBalls.size() > 0) {
+            System.out.println(holdBalls);
             // if the ejected ball isn't the initialized ball OR
             // the ejected ball has left the absorber OR
             // the ejected ball is being held by the absorber again
 //  //          if (ejected.name().equals("init") || !(checkInside(ejected)) || holdBalls.contains(ejected)) {
                 Ball shoot = holdBalls.remove(0);
-                shoot.setActive(true) ;
-                shoot.setVelocity(0, 50);
+                shoot.setCenter(this.x + this.width - HELD_BALL_OFFSET, this.y - 1);
+                shoot.setVelocity(0, -50);
+                shoot.setActive(true);
+                System.out.println("stored ball below shoot: \n" + shoot);
+                
+                for (Gadget actionObject: actionObjects) {
+                    actionObject.action();
+                }
+                
+                return;
   //              ejected = shoot;
 //  //          }
         }
+        System.out.println("No stored balls");
+        
     }
     
   //  private boolean checkInside(Ball ball) {

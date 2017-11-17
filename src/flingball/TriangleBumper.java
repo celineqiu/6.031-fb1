@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.accessibility.AccessibleState;
 import javax.xml.soap.Detail;
 
 import physics.Circle;
@@ -23,6 +24,7 @@ class TriangleBumper implements Gadget {
     private final List<LineSegment> legs = new ArrayList<>();
     private final List<Circle> corners = new ArrayList<>();
     private final Double INTERSECT = 0.25*0.25;
+    private final List<Gadget> actionObjects = new ArrayList<>();
     
     // Abstract Function:
     //   AF(name, x, y, orientation, legA, legB, hypotenuse, cornerA, cornerB, rightAngleCorner) 
@@ -137,6 +139,11 @@ class TriangleBumper implements Gadget {
     @Override
     public String name() {
         return this.name;
+    }
+    
+    @Override
+    public void addActionObject(Gadget actionObject) {
+        actionObjects.add(actionObject);
     }
     
     /**
@@ -281,7 +288,20 @@ class TriangleBumper implements Gadget {
 //            }
 ////        }
 //        return false;
-        return timeUntilCollision(ball) < deltaT;
+        if (timeUntilCollision(ball) < deltaT) {
+            Vect newVel = this.velocityAfterCollision(ball);
+            ball.setVelocity(newVel.x(), newVel.y());
+            Vect displacement = new Vect(ball.getVelocity().x()*deltaT, ball.getVelocity().y()*deltaT);
+            Vect newCenter = ball.getCenter().plus(displacement);
+            ball.setCenter(newCenter.x(), newCenter.y());
+            
+            for (Gadget actionObject: actionObjects) {
+                actionObject.action();
+            }
+            
+            return true;
+        }
+        return false;
     }
     
     @Override

@@ -49,7 +49,7 @@ public class Game {
             
         // keys and values in interactions must be in gadgets
         for (Gadget trigger : interactions.keySet()) {
-            assert gadgets.values().contains(trigger): "Trigger gadgets must be in gadgets map or be ";
+            assert gadgets.values().contains(trigger): "Trigger gadgets must be in gadgets map ";
             assert gadgets.values().contains(interactions.get(trigger)) : "Action gadgets must be in gadgets map";
         }
     }
@@ -96,7 +96,10 @@ public class Game {
             Gadget triggerObject = this.gadgets.get(triggerName);
             Gadget actionObject = this.gadgets.get(interactions.get(triggerName));
             this.interactions.put(triggerObject.copy(), actionObject.copy());
+            triggerObject.addActionObject(actionObject);
         }
+        
+        
         
         checkRep();
     }
@@ -191,8 +194,11 @@ public class Game {
             for (Ball ball : balls.values()) {
                 if (ball.isActive()) {
                     if (triggerObject.trigger(ball, TIMER_INTERVAL_MILLISECONDS)) {
+                        
                         Gadget actionObject = interactions.get(triggerObject);
+                        
                         actionObject.action();
+                        System.out.println(triggerObject + " is triggered by " + actionObject);
                     }
                 }
             }
@@ -209,19 +215,13 @@ public class Game {
             if (ball.isActive()) {
                 Boolean skipGravity = false;
                 // initialize values
-                System.out.println("current velocity: " +ball.getVelocity());
                 // find closest object
                 for (Gadget gadget : this.gadgets.values()) {
                     if (gadget.trigger(ball, TIMER_INTERVAL)) {
-                        System.out.println("old velocity: " +ball.getVelocity());
-                        Vect newVel = gadget.velocityAfterCollision(ball);
-                        ball.setVelocity(newVel.x(), newVel.y());
-                        Vect displacement = new Vect(ball.getVelocity().x()*TIMER_INTERVAL, ball.getVelocity().y()*TIMER_INTERVAL);
-                        Vect newCenter = ball.getCenter().plus(displacement);
-                        ball.setCenter(newCenter.x(), newCenter.y());
                         skipGravity = true;
                     }
                 }
+                
                 
                 if (!skipGravity) {
                     // update position
@@ -237,6 +237,7 @@ public class Game {
             }
         }
         checkTriggers();
+        
     }
     
     @Override

@@ -2,11 +2,12 @@ package flingball;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 import java.util.List;
 
 import physics.Circle;
-import physics.Vect;
 import physics.Physics;
+import physics.Vect;
 
 /**
  * Represents a Circle Bumper Gadget in a Flingball game.
@@ -16,6 +17,7 @@ class CircleBumper implements Gadget {
     private final int x, y;
     private final Circle circle;
     private final Double INTERSECT = 0.75*0.75;
+    private final List<Gadget> actionObjects = new ArrayList<>();
     
     // Abstract Function:
     //   AF(name, circle) = Circle bumper represented as a circle named name with 
@@ -67,6 +69,10 @@ class CircleBumper implements Gadget {
         return this.name;
     }
     
+    @Override
+    public void addActionObject(Gadget actionObject) {
+        actionObjects.add(actionObject);
+    }
     
     @Override
     public Double timeUntilCollision(Ball ball) {
@@ -114,8 +120,20 @@ class CircleBumper implements Gadget {
 //                return true;
 //            } 
 //        }
-//        return false;
-        return timeUntilCollision(ball) < deltaT;
+        if (timeUntilCollision(ball) < deltaT) {
+            Vect newVel = this.velocityAfterCollision(ball);
+            ball.setVelocity(newVel.x(), newVel.y());
+            Vect displacement = new Vect(ball.getVelocity().x()*deltaT, ball.getVelocity().y()*deltaT);
+            Vect newCenter = ball.getCenter().plus(displacement);
+            ball.setCenter(newCenter.x(), newCenter.y());
+            
+            for (Gadget actionObject: actionObjects) {
+                actionObject.action();
+            }
+            
+            return true;
+        }
+        return false;
     }
     
     @Override

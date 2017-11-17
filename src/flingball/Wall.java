@@ -108,14 +108,26 @@ class Wall implements Gadget {
     }
     
     @Override
+    public void addActionObject(Gadget actionObject) {
+        // never triggered
+    }
+    
+    @Override
     public int hashCode() {
         return this.name.hashCode() + this.line.hashCode() + this.startCorner.hashCode();
     }
     
     @Override
     public boolean trigger(Ball ball, double deltaT) {
-        // never triggered
-        return timeUntilCollision(ball) < deltaT;
+        if (timeUntilCollision(ball) < deltaT) {
+            Vect newVel = this.velocityAfterCollision(ball);
+            ball.setVelocity(newVel.x(), newVel.y());
+            Vect displacement = new Vect(ball.getVelocity().x()*deltaT, ball.getVelocity().y()*deltaT);
+            Vect newCenter = ball.getCenter().plus(displacement);
+            ball.setCenter(newCenter.x(), newCenter.y());
+            return true;
+        }
+        return false;
     }
     
     @Override

@@ -32,3 +32,5 @@ fire trigger=CircleE action=Abs1
 
 # absorber2 triggers itself
 fire trigger=Abs2 action=Abs2
+
+

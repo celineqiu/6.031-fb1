@@ -87,5 +87,11 @@ public interface Gadget {
     @Override
     public int hashCode();
     
+    /**
+     * Add an object that actions after this gadget is triggered
+     * @param actionObject the object that gets added
+     */
+    public void addActionObject(Gadget actionObject);
+    
     
 }
