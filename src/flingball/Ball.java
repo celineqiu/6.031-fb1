@@ -103,18 +103,23 @@ class Ball {
     
     /**
      * Update the ball's position and velocity as affected by a given gravity value in L/sec2.
+     * Time delta = 1
      * @param gravity value in L/sec2
      */
     public void gravity(double gravity) {
-        // TODO
+        setVelocity(velocity.x(), velocity.y() - gravity);
     }
     
     /**
      * Update the ball's position and velocity as affected by the given 
+     * Time delta = 1
      * frictional constants friction1 and friction2 (mu and mu2).
      */
     public void friction(double friction1, double friction2) {
-        // TODO
+        // Vnew = Vold × ( 1 - mu × deltat - mu2 × |Vold| × deltat )
+        Double scale = 1 - friction1 - friction2 * velocity.length();
+        Vect newVel = velocity.times(scale);
+        setVelocity(newVel.x(), newVel.y());
     }
     
     @Override 

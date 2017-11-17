@@ -29,8 +29,8 @@ public class Smile {
      */
     public static void main(String[] args) {
         // Two approaches to animation.  Uncomment the one to try:
-        animationApproach1();
-        //animationApproach2();
+        // animationApproach1();
+        // animationApproach2();
     }
     
 

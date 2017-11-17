@@ -3,7 +3,9 @@ package flingball;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import physics.Circle;
 import physics.LineSegment;
@@ -22,12 +24,16 @@ class Absorber implements Gadget {
     private final List<LineSegment> edges = new ArrayList<>();
     private final List<Circle> corners = new ArrayList<>();
     private final Double INTERSECT = 0.25*0.25;
+    private Ball ejected = new Ball("init", 0, 0, 0, 0);
     
     // Abstract Function:
-    //   AF(name, x, y, width, height, bottom, top, left, right, bottomLeft, bottomRight, topLeft, topRight) 
+    //   AF(name, x, y, width, height, bottom, top, left, right, bottomLeft, bottomRight, topLeft, topRight,
+    //      edges, corners, holdBalls, prevBall) 
     //     = Absorber with named name with upper left corner at (x, y), a width and a height,
     //         edges represented by bottom, top, left, right and 
-    //         corners represented by bottomLeft, bottomRight, topLeft, topRight
+    //         corners represented by bottomLeft, bottomRight, topLeft, topRight,
+    //         holdBalls list of balls being held in absorber,
+    //         prevBall maps to the previously ejected ball
     // Rep Invariant:
     //   name cannot be the name of other variables TODO how to check this
     //   x and y must be between 0 and 19
@@ -253,21 +259,41 @@ class Absorber implements Gadget {
     public boolean trigger(List<Ball> balls) {
         boolean trigger = false;
         for (Ball ball : balls) {
-            for (Circle corner : corners) {
-                Double distSquared = Physics.distanceSquared(corner.getCenter(), ball.getCenter()); 
-                if (distSquared <= INTERSECT) {
-                    trigger = true;
-                    // TODO add ball to absorber
+            // TODO is this enough to make sure it doesn't keep triggering
+            // the absorber as the ball exits the absorber
+            if (!(holdBalls.contains(ball))) {
+                if (ball.equals(ejected) && checkInside(ball)) {
+                    // if this is the ejected ball and it hasn't
+                    // left the absorber, then ignore
+                    continue;
+                } 
+                for (Circle corner : corners) {
+                    Double distSquared = Physics.distanceSquared(corner.getCenter(), ball.getCenter()); 
+                    if (distSquared <= INTERSECT) {
+                        trigger = true;
+                        // set ball to 0.25 to left and right of bottom right corner
+                        ball.setCenter(bottomRight.getCenter().x()-0.25, bottomRight.getCenter().y()-0.25);
+                        ball.setVelocity(0, 0);
+                    }
                 }
-            }
-            for (LineSegment edge : edges) {
-                Vect closestPoint = Physics.perpendicularPoint(edge, ball.getCenter());
-                Double distSquared = Physics.distanceSquared(closestPoint, ball.getCenter());
-                if (distSquared <= INTERSECT) {
+                for (LineSegment edge : edges) {
+                    Vect closestPoint = Physics.perpendicularPoint(edge, ball.getCenter());
+                    Double distSquared = Physics.distanceSquared(closestPoint, ball.getCenter());
+                    if (distSquared <= INTERSECT) {
+                        trigger = true;
+                        // set ball to 0.25 to left and right of bottom right corner
+                        ball.setCenter(bottomRight.getCenter().x()-0.25, bottomRight.getCenter().y()-0.25);
+                        ball.setVelocity(0, 0);
+                    }
+                // TODO determine if necessary
+                // in case a ball moves too fast and is already inside
+                if (checkInside(ball)) {
                     trigger = true;
-                    // TODO add ball to absorber
+                    // set ball to 0.25 to left and right of bottom right corner
+                    ball.setCenter(bottomRight.getCenter().x()-0.25, bottomRight.getCenter().y()-0.25);
+                    ball.setVelocity(0, 0);
+                    } 
                 }
-                
             }
         }
         return trigger;
@@ -275,7 +301,28 @@ class Absorber implements Gadget {
     
     @Override
     public void action() {
-        // TODO shoot out ball
+        // if there are balls to eject
+        if (holdBalls.size() > 0) {
+            // if the ejected ball isn't the initialized ball OR
+            // the ejected ball has left the absorber OR
+            // the ejected ball is being held by the absorber again
+            if (ejected.name().equals("init") || !(checkInside(ejected)) || holdBalls.contains(ejected)) {
+                Ball shoot = holdBalls.remove(0);
+                shoot.setVelocity(0, 50);
+                ejected = shoot;
+            }
+        }
+    }
+    
+    private boolean checkInside(Ball ball) {
+        // return true if ball is inside absorber
+        // return false otherwise
+        Vect center = ball.getCenter();
+        if (center.x() >= x-0.25 && center.x() <= x+width+0.25 &&
+            center.y() >= y-0.25 && center.y() <= y + height+0.25) {
+            return true;
+        }
+        return false;
     }
     
     @Override
