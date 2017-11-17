@@ -1,5 +1,6 @@
 package flingball;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 import java.util.List;
 
 import physics.Circle;
@@ -110,6 +111,11 @@ class Wall implements Gadget {
     @Override
     public void addActionObject(Gadget actionObject) {
         // never triggered
+    }
+    
+    @Override
+    public List<Gadget> getActionObjects() {
+        return new ArrayList<>();
     }
     
     @Override

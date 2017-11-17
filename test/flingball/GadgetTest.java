@@ -1,17 +1,19 @@
 package flingball;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 import physics.Physics;
 
-import org.junit.Test;
-
 import physics.Circle;
-
-
+import physics.LineSegment;
 import physics.Vect;
 
 
@@ -23,18 +25,18 @@ public class GadgetTest {
     //     Triangle Bumper
     //     Absorber
     //     Wall
-    //   Test all general methods of gadget
+    //   Test general methods of gadget
     //     name
     //     timeUntilCollison
     //     velocityAfterCollision
     //     trigger
     //     action
-    //     drawIcon
     //     copy
     //     toString
     //     equals
     //     hashCode
     //     addActionObject
+    //     getActionObjects
     //   Test specific methods of gadgets
     
     // covers Absorber
@@ -45,16 +47,79 @@ public class GadgetTest {
     //       getHeight
     //       getEdges
     //       getCorners
-    //       getBalls
     @Test
     public void testAbsorber() {
-        Absorber abs = new Absorber("absorber", 1, 1, 5, 5);
+        final int X = 1;
+        final int Y = 2;
+        final int WIDTH = 5;
+        final int HEIGHT = 6;
+        
+        Absorber abs = new Absorber("absorber", X, Y, WIDTH, HEIGHT);
+        
+        // define edges
+        List<LineSegment> expectedEdges = new ArrayList<>();
+        LineSegment bottom = new LineSegment(X+WIDTH, Y+HEIGHT, X, Y+HEIGHT);
+        LineSegment top = new LineSegment(X, Y, X+WIDTH, Y);
+        LineSegment left = new LineSegment(X, Y+HEIGHT, X, Y);
+        LineSegment right = new LineSegment(X+WIDTH, Y, X+WIDTH, Y+HEIGHT);
+        expectedEdges.add(bottom);
+        expectedEdges.add(top);
+        expectedEdges.add(left);
+        expectedEdges.add(right);
+        
+        // define corners
+        List<Circle> expectedCorners = new ArrayList<>();
+        Circle bottomLeft = new Circle(X, Y+HEIGHT, 0);
+        Circle bottomRight = new Circle(X+WIDTH, Y+HEIGHT, 0);
+        Circle topLeft = new Circle(X, Y, 0);
+        Circle topRight = new Circle(X+WIDTH, Y, 0);
+        expectedCorners.add(bottomLeft);
+        expectedCorners.add(bottomRight);
+        expectedCorners.add(topLeft);
+        expectedCorners.add(topRight);
+        
+        Ball ball = new Ball("ball", 1, 1, 5, 5);
+        
+        // name
         assertEquals("expected correct name", "absorber", abs.name());
+        
         // timeUntilCollision
-        // velocityAfterCollision
+        LineSegment closestEdge = new LineSegment(0, 0, 1, 1);
+        Circle closestCorner = new Circle(0, 0, 0);
+        Double minEdge = Double.MAX_VALUE;
+        Double minCorner = Double.MAX_VALUE;
+        
+        // find closest edge and corner
+        for (LineSegment edge : expectedEdges) {
+            Double time = Physics.timeUntilWallCollision(edge, ball.getCircle(), ball.getVelocity());
+            if (time < minEdge) {
+                minEdge = time;
+                closestEdge = edge;
+            }
+        }
+        for (Circle corner : expectedCorners) {
+            Double time = Physics.timeUntilCircleCollision(corner, ball.getCircle(), ball.getVelocity());
+            if (time < minCorner) {
+                minCorner = time;
+                closestCorner = corner;
+            }
+        }
+        Double expectedTimeUntilCollision = Math.min(minEdge, minCorner);
+        assertEquals("expected correct time until collision", expectedTimeUntilCollision, abs.timeUntilCollision(ball));
+        
+        // velocityAfterCollision 
+        // find closest object & post collision velocity
+        Vect expectedNewVel;
+        if (minCorner <= minEdge) {
+            expectedNewVel = Physics.reflectCircle(closestCorner.getCenter(), ball.getCenter(), ball.getVelocity());
+        } else {
+            expectedNewVel = Physics.reflectWall(closestEdge, ball.getVelocity());
+        }
+        assertEquals("expected same new velocity after collision", expectedNewVel, abs.velocityAfterCollision(ball));
+        
         // trigger
-        // action
-        // drawIcon
+        assertFalse("expected no trigger", abs.trigger(ball, 50*0.0001));
+        
         // copy
         Absorber absCopy = abs.copy();
         assertEquals("expected same origin", abs.getOrigin(), absCopy.getOrigin());
@@ -66,13 +131,13 @@ public class GadgetTest {
         
         // toString
         String expectedString = "name: absorber" + "\n" +
-                          "origin: (1,1)" + "\n" +
+                          "origin: (1,2)" + "\n" +
                           "width: 5" + "\n" +
-                          "height: 5";
+                          "height: 6";
         assertEquals("expected same string", expectedString, abs.toString());
         
         // equals
-        Absorber absSame = new Absorber("absorber", 1, 1, 5, 5);
+        Absorber absSame = new Absorber("absorber", X, Y, WIDTH, HEIGHT);
         assertEquals("expected same absorbers to be equal", absSame, abs);
         assertEquals("expected copies to be equal", absCopy, abs);
         assertEquals("expected symmetric equality", abs, abs);
@@ -81,17 +146,24 @@ public class GadgetTest {
         int expectedHashCode = abs.name().hashCode() + (int)abs.getOrigin().x() + (int)abs.getOrigin().y() + abs.getWidth() + abs.getHeight();
         assertEquals("expected correct hashCode", expectedHashCode, abs.hashCode());
         
-        // addActionObject
+        // addActionObject, getActionObjects
         abs.addActionObject(absCopy);
-//        assertTrue("expected added action object to be in actionObjects", abs.getActionObjects().contains(absCopy));
+        assertTrue("expected added action object to be in actionObjects", abs.getActionObjects().contains(absCopy));
         
         // getOrigin
-        assertEquals("expected correct origin", new Vect(1, 1), abs.getOrigin());
+        assertEquals("expected correct origin", new Vect(X, Y), abs.getOrigin());
         
         // getWidth
+        assertEquals("expected correct width", WIDTH, abs.getWidth());
+        
+        // getHeight
+        assertEquals("expected correct height", HEIGHT, abs.getHeight());
+        
         // getEdges
+        assertEquals("expected same edges", expectedEdges, abs.getEdges());
+        
         // getCorners
-        // getBalls
+        assertEquals("expected same corners", expectedCorners, abs.getCorners());
     }
     
     // CircleBumper tests

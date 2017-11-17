@@ -145,6 +145,13 @@ class TriangleBumper implements Gadget {
         actionObjects.add(actionObject);
     }
     
+    @Override
+    public List<Gadget> getActionObjects() {
+        List<Gadget> actionObjectsCopy = new ArrayList<>();
+        for (Gadget gadget : this.actionObjects) actionObjectsCopy.add(gadget.copy());
+        return actionObjectsCopy;
+    }
+    
     /**
      * @return origin of the triangle bumper bounding box
      */

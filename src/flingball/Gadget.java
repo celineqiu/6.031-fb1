@@ -92,5 +92,11 @@ public interface Gadget {
      * @param actionObject the object that gets added
      */
     public void addActionObject(Gadget actionObject);
+    
+    /**
+     * Get the action objects that this gadget triggers.
+     * @return actionObjects that this gadgets triggers
+     */
+    public List<Gadget> getActionObjects();
 
 }

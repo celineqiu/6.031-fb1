@@ -245,7 +245,13 @@ class SquareBumper implements Gadget {
     @Override
     public void addActionObject(Gadget actionObject) {
         actionObjects.add(actionObject);
-        
+    }
+    
+    @Override
+    public List<Gadget> getActionObjects() {
+        List<Gadget> actionObjectsCopy = new ArrayList<>();
+        for (Gadget gadget : this.actionObjects) actionObjectsCopy.add(gadget.copy());
+        return actionObjectsCopy;
     }
     
     @Override
