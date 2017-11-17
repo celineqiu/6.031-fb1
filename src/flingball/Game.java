@@ -70,6 +70,7 @@ public class Game {
         this.gravity = gravity;
         this.friction1 = friction1;
         this.friction2 = friction2;
+
         
         for (Ball ball : balls) {
             // TODO? make a defensive copy of the ball before storing it to prevent rep exposure
@@ -106,10 +107,10 @@ public class Game {
      */
     public void run() {
         try {
-            //while (true) {
+            while (true) {
                 updateBalls();
                 Thread.sleep(TIMER_INTERVAL_MILLISECONDS);
-            //}
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -202,49 +203,34 @@ public class Game {
      * Calculates Ball positions and velocities at every timestep.
      */
     public void updateBalls() {
-        System.out.println("updateBalls START");
-        while (true) {  
-            for (Ball ball : this.balls.values()) {
-                // initialize values
-                Double minTime = Double.MAX_VALUE;
-                Vect newVel = ball.getVelocity();
-                ball.gravity(this.gravity);
-                ball.friction(this.friction1, this.friction2);
-                ball.setVelocity(newVel.x(), newVel.y());
-                
-                // find closest object
-                for (Gadget gadget : this.gadgets.values()) {
-                    Double time = gadget.timeUntilCollision(ball);
-                    if (time < minTime) {
-                        minTime = time;
-                        newVel = gadget.velocityAfterCollision(ball);
-                    }
-                }
-                System.out.println("Min Time is " + minTime);
-                
-                for (int i = 0; i < minTime-1; i++) {
-                    // update position
-                    ball.gravity(this.gravity);
-                    ball.friction(this.friction1, this.friction2);
-                    // add a method for ball to update position given velocity?
-                    Vect newCenter = ball.getCenter().plus(ball.getVelocity());
-                    
+        for (Ball ball : this.balls.values()) {
+            // initialize values
+            System.out.println("current velocity: " +ball.getVelocity());
+            // find closest object
+            for (Gadget gadget : this.gadgets.values()) {
+                Double time = gadget.timeUntilCollision(ball);
+                if (time < TIMER_INTERVAL_MILLISECONDS*0.001) {
+                    System.out.println("old velocity: " +ball.getVelocity());
+                    Vect newVel = gadget.velocityAfterCollision(ball);
+                    ball.setVelocity(newVel.x(), newVel.y());
+                    Vect displacement = new Vect(ball.getVelocity().x()*TIMER_INTERVAL_MILLISECONDS*0.001, ball.getVelocity().y()*TIMER_INTERVAL_MILLISECONDS*0.001 );
+                    System.out.println("new velocity: " +ball.getVelocity());
+                    Vect newCenter = ball.getCenter().plus(displacement);
                     ball.setCenter(newCenter.x(), newCenter.y());
-                    checkTriggers();
+                    return; 
                 }
-
-                // update position so ball collides & set post collision velocity
-                ball.gravity(this.gravity);
-                System.out.println("gravity is " + this.gravity);
-                ball.friction(this.friction1, this.friction2);
-                
-                // add a method for ball to update position given velocity?
-                Vect newCenter = ball.getCenter().plus(ball.getVelocity().times(minTime % 1));
-                System.out.println("new Center is "+newCenter);
-                ball.setCenter(newCenter.x(), newCenter.y());
-                ball.setVelocity(newVel.x(), newVel.y());
-                checkTriggers();
             }
+            
+            // update position
+            ball.gravity(this.gravity, TIMER_INTERVAL_MILLISECONDS*0.001);
+            ball.friction(this.friction1, this.friction2, TIMER_INTERVAL_MILLISECONDS*0.001);
+            
+            // add a method for ball to update position given velocity?
+            Vect displacement = new Vect(ball.getVelocity().x()*TIMER_INTERVAL_MILLISECONDS*0.001, ball.getVelocity().y()*TIMER_INTERVAL_MILLISECONDS*0.001 );
+            Vect newCenter = ball.getCenter().plus(displacement);
+            
+            ball.setCenter(newCenter.x(), newCenter.y());
+            checkTriggers();
         }
     }
     
