@@ -16,7 +16,6 @@ class CircleBumper implements Gadget {
     private final String name;
     private final int x, y;
     private final Circle circle;
-    private final Double INTERSECT = 0.75*0.75;
     private final List<Gadget> actionObjects = new ArrayList<>();
     
     // Abstract Function:
@@ -60,7 +59,7 @@ class CircleBumper implements Gadget {
     /**
      * @return circle representing circle bumper
      */
-    private Circle getCircle() {
+    public Circle getCircle() {
         return new Circle(this.x+0.5, this.y+0.5, 0.5);
     }
     
