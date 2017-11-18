@@ -266,7 +266,7 @@ public class GadgetTest {
     }
     
     @Test
-    public void testTriggerCircleBumperTrigered() {
+    public void testTriggerCircleBumperTriggered() {
         Ball ball = new Ball("ball", 10.5, 8, 0, 4);
         CircleBumper circle = new CircleBumper("circle", 10, 10);
         assertTrue("expected triggered", circle.trigger(ball, 10));
@@ -394,6 +394,15 @@ public class GadgetTest {
     }
     
     // covers Square
+    //        triggered
+    @Test
+    public void testTriggerSquareBumperTriggered() {
+        Ball ball = new Ball("ball", 10.5, 8, 0, 4);
+        SquareBumper square = new SquareBumper("circle", 10, 10);
+        assertTrue("expected triggered", square.trigger(ball, 10));
+    }
+   
+    // covers Triangle
     //     all general methods of gadget
     //     specific methods of Square
     //       getOrigin
@@ -510,6 +519,15 @@ public class GadgetTest {
         
         // getCorners
         assertEquals("expected same corners", expectedCorners, triangle.getCorners());
+    }
+    
+    // covers Triangle
+    //        triggered
+    @Test
+    public void testTriggerTriangleBumperTriggered() {
+        Ball ball = new Ball("ball", 10.5, 8, 0, 4);
+        TriangleBumper triangle = new TriangleBumper("circle", 10, 10);
+        assertTrue("expected triggered", triangle.trigger(ball, 10));
     }
     
     // covers Wall
