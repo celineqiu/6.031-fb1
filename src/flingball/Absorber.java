@@ -88,24 +88,25 @@ class Absorber implements Gadget {
      * Check that the rep invariant is satisfied.
      */
     private void checkRep() {
-        assert(x >= 0 && x <= 19);
-        assert(y >= 0 && y <= 19);
-        assert(width >= 1 && width <= 20);
-        assert(height >= 1 && height <= 20);
+        final int WALL_LENGTH = 20;
+        assert(x >= 0 && x <= WALL_LENGTH-1);
+        assert(y >= 0 && y <= WALL_LENGTH-1);
+        assert(width >= 1 && width <= WALL_LENGTH);
+        assert(height >= 1 && height <= WALL_LENGTH);
         
         for (LineSegment edge : edges) {
             Vect p1 = edge.p1();
             Vect p2 = edge.p2();
-            assert(p1.x() >= 0 && p1.x() <= 20) : "edge center out of range, p1.x(), value is " + p1.x();
-            assert(p1.y() >= 0 && p1.y() <= 20) : "edge center out of range, p1.y(), value is " + p1.y();
-            assert(p2.x() >= 0 && p2.x() <= 20) : "edge center out of range, p2.x(), value is " + p2.x();
-            assert(p2.y() >= 0 && p2.y() <= 20) : "edge center out of range, p2.y(), value is " + p2.y();
+            assert(p1.x() >= 0 && p1.x() <= WALL_LENGTH) : "edge center out of range, p1.x(), value is " + p1.x();
+            assert(p1.y() >= 0 && p1.y() <= WALL_LENGTH) : "edge center out of range, p1.y(), value is " + p1.y();
+            assert(p2.x() >= 0 && p2.x() <= WALL_LENGTH) : "edge center out of range, p2.x(), value is " + p2.x();
+            assert(p2.y() >= 0 && p2.y() <= WALL_LENGTH) : "edge center out of range, p2.y(), value is " + p2.y();
         }
 
         for (Circle corner : corners) {
             Vect center = corner.getCenter();
-            assert(center.x() >= 0 && center.x() <= 20) : "corner center out of range, x";
-            assert(center.y() >= 0 && center.y() <= 20) : "corner center out of range, y";
+            assert(center.x() >= 0 && center.x() <= WALL_LENGTH) : "corner center out of range, x";
+            assert(center.y() >= 0 && center.y() <= WALL_LENGTH) : "corner center out of range, y";
         }
         
         assert(bottomRight.getCenter().equals(bottom.p1()) && bottomLeft.getCenter().equals(bottom.p2()));
@@ -299,6 +300,7 @@ class Absorber implements Gadget {
     
     @Override
     public void action() {
+        final int SHOOT_VELOCITY = 50;
         // if there are balls to eject
         if (holdBalls.size() > 0) {
             // if the ejected ball isn't the initialized ball OR
@@ -307,7 +309,7 @@ class Absorber implements Gadget {
             if (ejected.name().equals("") || !(checkInside(ejected)) || holdBalls.contains(ejected)) {
                 Ball shoot = holdBalls.remove(0);
                 ejected = shoot;
-                shoot.setVelocity(0, -50);
+                shoot.setVelocity(0, -SHOOT_VELOCITY);
                 shoot.setActive(true);
                 checkRep();
                 return;
@@ -322,11 +324,12 @@ class Absorber implements Gadget {
      * @return true if ball is inside absorber and false otherwise
      */
     private boolean checkInside(Ball ball) {
+        final double BALL_RADIUS = 0.25;
         // return true if ball is inside absorber
         // return false otherwise
         Vect center = ball.getCenter();
-        if (center.x() >= x-0.25 && center.x() <= x+width+0.25 &&
-            center.y() >= y-0.25 && center.y() <= y + height+0.25) {
+        if (center.x() >= x-BALL_RADIUS && center.x() <= x+width+BALL_RADIUS &&
+            center.y() >= y-BALL_RADIUS && center.y() <= y + height+BALL_RADIUS) {
             return true;
         }
         return false;

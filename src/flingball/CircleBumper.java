@@ -17,10 +17,12 @@ class CircleBumper implements Gadget {
     private final int x, y;
     private final Circle circle;
     private final List<Gadget> actionObjects = new ArrayList<>();
+    private static final double CIRCLE_RADIUS = 0.5;
     
     // Abstract Function:
-    //   AF(name, x, y, circle, actionObjects) = Circle bumper represented as a circle with a name, its 
-    //      upper left corner of bounding box at (x, y), and actionObjects representing objects to be affected
+    //   AF(name, x, y, circle, actionObjects, CIRCLE_RADIUS) = Circle bumper represented as a circle with a name, its 
+    //      upper left corner of bounding box at (x, y), a radius of 0.5,
+    //      and actionObjects representing objects to be affected
     //      when the circle bumper is triggered,
     //      actionObjects representing objects to be affected when absorber is triggered
     // Rep Invariant:
@@ -41,7 +43,7 @@ class CircleBumper implements Gadget {
         this.name = name;
         this.x = x;
         this.y = y;
-        this.circle = new Circle(x+0.5, y+0.5, 0.5);
+        this.circle = new Circle(x+CIRCLE_RADIUS, y+CIRCLE_RADIUS, CIRCLE_RADIUS);
         checkRep();
     }
     
@@ -49,12 +51,13 @@ class CircleBumper implements Gadget {
      * Check that the rep invariant is satisfied.
      */
     private void checkRep() {
-        assert(x >= 0 && x <= 19);
-        assert(y >= 0 && y <= 19);
+        final int MAX_CENTER_COORD = 19;
+        assert(x >= 0 && x <= MAX_CENTER_COORD);
+        assert(y >= 0 && y <= MAX_CENTER_COORD);
         Vect center = circle.getCenter();
-        assert(center.x() == x+0.5);
-        assert(center.y() == y+0.5);
-        assert(circle.getRadius() == 0.5);
+        assert(center.x() == x+CIRCLE_RADIUS);
+        assert(center.y() == y+CIRCLE_RADIUS);
+        assert(circle.getRadius() == CIRCLE_RADIUS);
     }
     
     /**
@@ -70,7 +73,7 @@ class CircleBumper implements Gadget {
      * @return circle representing circle bumper
      */
     public Circle getCircle() {
-        return new Circle(this.x+0.5, this.y+0.5, 0.5);
+        return new Circle(this.x+CIRCLE_RADIUS, this.y+CIRCLE_RADIUS, CIRCLE_RADIUS);
     }
     
     @Override
@@ -156,7 +159,7 @@ class CircleBumper implements Gadget {
     
     @Override
     public void drawIcon(Graphics2D g, final int scaler, List<Ball> balls, double deltaT) {
-        
+        final int FILL_CONSTANT = 2;
         g.setColor(Color.PINK); 
         for (Ball ball : balls) {
             if (trigger(ball, deltaT))  g.setColor(Color.YELLOW);
@@ -166,6 +169,6 @@ class CircleBumper implements Gadget {
         int displayY = (int) Math.round(y*scaler);
         int displayRadius = (int) Math.round(circle.getRadius()*scaler);
         
-        g.fillOval(displayX, displayY, displayRadius*2, displayRadius*2);
+        g.fillOval(displayX, displayY, displayRadius*FILL_CONSTANT, displayRadius*FILL_CONSTANT);
     }
 }

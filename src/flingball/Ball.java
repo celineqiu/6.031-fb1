@@ -14,10 +14,11 @@ class Ball {
     private Circle ball;
     private Vect velocity;
     private Boolean status = true;
+    private static final double BALL_RADIUS = 0.25;
     
     // Abstract Function:
-    //   AF(name, ball, velocity, status) = ball of diameter 0.5L with a name, a velocity, and 
-    //                                      a status of activity in the Flingball playing area  
+    //   AF(name, ball, velocity, status, BALL_RADIUS) = ball of diameter 0.5L with a name, a velocity, 
+    //      a radius of BALL_RADIUS, and a status of activity in the Flingball playing area,   
     // Rep invariant:
     //   diameter is 0.5L
     //   ball must be within the playing area
@@ -35,7 +36,7 @@ class Ball {
      */
     public Ball(String name, double x, double y, double xVelocity, double yVelocity) {
         this.name = name;
-        this.ball = new Circle(x, y, 0.25);
+        this.ball = new Circle(x, y, BALL_RADIUS);
         this.velocity = new Vect(xVelocity, yVelocity);
         checkRep();
     }
@@ -44,10 +45,11 @@ class Ball {
      * Check that the rep invariant is satisfied.
      */
     private void checkRep() {
-        assert(ball.getRadius() == 0.25) : "radius must be equal to 0.25";
+        final int WALL_LENGTH = 20;
+        assert(ball.getRadius() == BALL_RADIUS) : "radius must be equal to 0.25";
         Vect center = ball.getCenter();
-        assert(center.x() >= 0.25 && center.x() <= 19.75) : "ball x pos must be in playing area";
-        assert(center.y() >= 0.25 && center.y() <= 19.75) : "ball y pos must be in playing area";
+        assert(center.x() >= BALL_RADIUS && center.x() <= WALL_LENGTH-BALL_RADIUS) : "ball x pos must be in playing area";
+        assert(center.y() >= BALL_RADIUS && center.y() <= WALL_LENGTH-BALL_RADIUS) : "ball y pos must be in playing area";
         // ball must have velocity (0, 0) if its status is inactive
         if (!this.status) assert this.velocity.equals(new Vect(0, 0));
     }
@@ -74,7 +76,7 @@ class Ball {
      * @param y coordinate of the center of the ball
      */
     public void setCenter(double x, double y) {
-        this.ball = new Circle(x, y, 0.25);
+        this.ball = new Circle(x, y, BALL_RADIUS);
     }
     
     /**
@@ -99,7 +101,7 @@ class Ball {
      * @return circle representing the ball
      */
     public Circle getCircle() {
-        return new Circle(this.ball.getCenter().x(), this.ball.getCenter().y(), 0.25);
+        return new Circle(this.ball.getCenter().x(), this.ball.getCenter().y(), BALL_RADIUS);
     }
     
     /**
@@ -183,13 +185,13 @@ class Ball {
      *        correspond with the value of L in the overall spec
      */
     public void drawIcon(final Graphics2D g, final int scaler) {
-
+        final int FILL_CONSTANT = 2;
         g.setColor(Color.BLUE);
         int displayX = (int) Math.round(ball.getCenter().x()*scaler);
         int displayY = (int) Math.round(ball.getCenter().y()*scaler);
         int displayRadius = (int) Math.round(ball.getRadius()*scaler);
         
-        g.fillOval(displayX, displayY, displayRadius*2, displayRadius*2);
+        g.fillOval(displayX, displayY, displayRadius*FILL_CONSTANT, displayRadius*FILL_CONSTANT);
         checkRep();
     }
 }

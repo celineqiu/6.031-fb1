@@ -21,7 +21,8 @@ public class Game {
     private final Map<Gadget, Gadget> interactions = new HashMap<>();
     
     private static final int TIMER_INTERVAL_MILLISECONDS = 50;
-    private static final double TIMER_INTERVAL = TIMER_INTERVAL_MILLISECONDS *0.001;
+    private static final double TIMER_INTERVAL = TIMER_INTERVAL_MILLISECONDS * 0.001;
+    private static final int WALL_LENGTH = 20;
     
     // Abstraction Function:
     //   AF(name, gravity, friction1, friction2, balls, gadgets, interactions)
@@ -76,10 +77,10 @@ public class Game {
         }
         
         // create walls
-        Wall top = new Wall("top", 0, 0, 20, 0);
-        Wall left = new Wall("left", 0, 20, 0, 0);
-        Wall right = new Wall("right", 20, 0, 20, 20);
-        Wall bottom = new Wall("bottom", 20, 20, 0, 20);
+        Wall top = new Wall("top", 0, 0, WALL_LENGTH, 0);
+        Wall left = new Wall("left", 0, WALL_LENGTH, 0, 0);
+        Wall right = new Wall("right", WALL_LENGTH, 0, WALL_LENGTH, WALL_LENGTH);
+        Wall bottom = new Wall("bottom", WALL_LENGTH, WALL_LENGTH, 0, WALL_LENGTH);
         gadgets.add(top);
         gadgets.add(left);
         gadgets.add(right);
@@ -186,7 +187,7 @@ public class Game {
      * Calculates Ball positions and velocities at every timestep.
      */
     public void updateBalls() {
-
+        final double BALL_CENTER_MIN_OFFSET = 0.25;
         for (Ball ball : this.balls.values()) {
             if (ball.isActive()) {
                 Boolean skipGravity = false;
@@ -198,7 +199,6 @@ public class Game {
                     }
                 }
                 
-                
                 if (!skipGravity) {
                     // update position
                     ball.gravity(this.gravity, TIMER_INTERVAL);
@@ -208,7 +208,10 @@ public class Game {
                     Vect displacement = new Vect(ball.getVelocity().x()*TIMER_INTERVAL, ball.getVelocity().y()*TIMER_INTERVAL);
                     Vect newCenter = ball.getCenter().plus(displacement);
                     
-                    ball.setCenter(newCenter.x(), newCenter.y());
+                    // clip to prevent the ball from going out of the playing area
+                    double centerX = Math.min(Math.max(newCenter.x(), BALL_CENTER_MIN_OFFSET), WALL_LENGTH-BALL_CENTER_MIN_OFFSET);
+                    double centerY = Math.min(Math.max(newCenter.y(), BALL_CENTER_MIN_OFFSET), WALL_LENGTH-BALL_CENTER_MIN_OFFSET);
+                    ball.setCenter(centerX, centerY);
                 }
             }
         }        
@@ -216,6 +219,7 @@ public class Game {
     
     @Override
     public String toString() {
+        final int NUM_CHARS_TO_REMOVE = 2;
         StringBuilder gameString = new StringBuilder("[Game: " + this.name 
                 + "; Gravity: " + this.gravity 
                 + "; Friction: " + this.friction1 + ", " + this.friction2 
@@ -224,19 +228,19 @@ public class Game {
         // balls
         for (String ball : this.balls.keySet()) gameString.append(ball + ", "); 
         // remove the last comma and space once all balls have been added
-        if (!this.balls.isEmpty()) gameString.delete(gameString.length()-2, gameString.length());
+        if (!this.balls.isEmpty()) gameString.delete(gameString.length()-NUM_CHARS_TO_REMOVE, gameString.length());
         gameString.append("; Gadgets: ");
         
         // gadgets
         for (String gadget : this.gadgets.keySet()) gameString.append(gadget + ", ");
         // remove the last comma and space once all gadgets have been added
-        if (!this.gadgets.isEmpty()) gameString.delete(gameString.length()-2, gameString.length());
+        if (!this.gadgets.isEmpty()) gameString.delete(gameString.length()-NUM_CHARS_TO_REMOVE, gameString.length());
         gameString.append("; Events: ");
         
         // events
         for (Gadget interaction : this.interactions.keySet()) gameString.append("(Trigger: " + interaction + ", Action: " + this.interactions.get(interaction) + "), ");
         // remove the last comma and space once all gadgets have been added
-        if (!this.interactions.isEmpty()) gameString.delete(gameString.length()-2, gameString.length());
+        if (!this.interactions.isEmpty()) gameString.delete(gameString.length()-NUM_CHARS_TO_REMOVE, gameString.length());
         gameString.append("]");
         
         return gameString.toString();
