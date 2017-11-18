@@ -68,10 +68,10 @@ public class Flingball {
     }
     
     /**
-     * Get the string of all the contents of a file.
-     * @param filepath of the file to get contents of
-     * @return wordString one string of all contents of a file
-     * @throws FileNotFoundException if file cannot be found
+     * Get the content of a file as a string
+     * @param filepath the path of the file
+     * @return string of it's content
+     * @throws FileNotFoundException when no file exists in the given path
      */
     private static String getString(String filepath) throws FileNotFoundException{
         File file = new File(filepath);
@@ -83,11 +83,11 @@ public class Flingball {
         fileWords.close();
         return wordString;
     }
-
+  
     /**
-     * Display the default Flingball game.
-     * @throws UnableToParseException if the Flingball file cannot be parsed
-     * @throws FileNotFoundException if the Flingball file cannot be found
+     * display the default game in a JFrame window
+     * @throws UnableToParseException if default.fb is not parsable
+     * @throws FileNotFoundException if there is no file in the given filepath of default.fb
      */
     public static void displayDefault() throws UnableToParseException, FileNotFoundException{
         final String defaultContent = getString("boards/default.fb");

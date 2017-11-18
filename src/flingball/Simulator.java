@@ -32,7 +32,7 @@ public class Simulator {
     }
     
     /**
-     * Draw the Flingball game.
+     * Draw the Flingball game at TIMER_INTERVAL_MILLISECONDS milliseconds per frame
      */
     public void draw() {
         final JFrame window = new JFrame("flingball");
