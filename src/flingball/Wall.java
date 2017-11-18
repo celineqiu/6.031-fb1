@@ -24,6 +24,7 @@ class Wall implements Gadget {
     //   startCorner coordinates must be between 0 or 20
     //   length of wall is 20
     //   wall name is top, bottom, left, or right
+    //   actionObjects must be empty
     // Safety from rep exposure:
     //   fields are private and final
     
@@ -44,6 +45,7 @@ class Wall implements Gadget {
         assert(line.length() == 20);
         assert(this.name.equals("top") || this.name.equals("bottom") || 
                this.name.equals("left") || this.name.equals("right"));
+        // actionObjects must be empty
     }
     
     @Override
@@ -152,5 +154,4 @@ class Wall implements Gadget {
     public void drawIcon(Graphics2D g, int scaler, List<Ball> balls, double deltaT) {
         // not drawn
     }
-
 }

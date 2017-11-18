@@ -10,19 +10,21 @@ import physics.Vect;
  * Represents a Ball in a Flingball game.
  */
 class Ball {
-    private String name;
+    private final String name;
     private Circle ball;
     private Vect velocity;
     private Boolean status = true;
     
     // Abstract Function:
-    //   AF(ball, velocity) = ball of diameter 0.5L with a velocity in the Flingball playing area  
+    //   AF(name, ball, velocity, status) = ball of diameter 0.5L with a name, a velocity, and 
+    //                                      a status of activity in the Flingball playing area  
     // Rep invariant:
     //   diameter is 0.5L
     //   ball must be within the playing area
+    //   ball must have velocity (0, 0) if its status is inactive
     // Safety from rep exposure:
-    //   fields are final
-    //   defensive copies are returned
+    //   fields are private, name is final
+    //   defensive copies are stored and returned
     
     /**
      * Create a Ball object.
@@ -32,9 +34,6 @@ class Ball {
      * @param yVelocity y value of the ball velocity
      */
     public Ball(String name, double x, double y, double xVelocity, double yVelocity) {
-        System.out.println(name);
-        System.out.println("ball x coord: " + x);
-        System.out.println("ball y coord: " + y);
         this.name = name;
         this.ball = new Circle(x, y, 0.25);
         this.velocity = new Vect(xVelocity, yVelocity);
@@ -49,6 +48,8 @@ class Ball {
         Vect center = ball.getCenter();
         assert(center.x() >= 0.25 && center.x() <= 19.75) : "ball x pos must be in playing area";
         assert(center.y() >= 0.25 && center.y() <= 19.75) : "ball y pos must be in playing area";
+        // ball must have velocity (0, 0) if its status is inactive
+        if (!this.status) assert this.velocity.equals(new Vect(0, 0));
     }
     
     /**
@@ -108,6 +109,7 @@ class Ball {
      */
     public void gravity(double gravity, double deltaT) {
         setVelocity(velocity.x(), velocity.y() + gravity*deltaT);
+        checkRep();
     }
     
     /**
@@ -118,6 +120,7 @@ class Ball {
         Double scale = 1 - friction1*deltaT - friction2 * velocity.length()*deltaT;
         Vect newVel = velocity.times(scale);
         setVelocity(newVel.x(), newVel.y());
+        checkRep();
     }
     
     @Override 
@@ -170,6 +173,7 @@ class Ball {
      */
     public void setActive(boolean status) {
         this.status = status;
+        checkRep();
     }
     
     /**
@@ -186,5 +190,6 @@ class Ball {
         int displayRadius = (int) Math.round(ball.getRadius()*scaler);
         
         g.fillOval(displayX, displayY, displayRadius*2, displayRadius*2);
+        checkRep();
     }
 }

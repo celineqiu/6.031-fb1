@@ -22,20 +22,22 @@ class Absorber implements Gadget {
     private final List<Ball> holdBalls = new LinkedList<>();
     private final List<LineSegment> edges = new ArrayList<>();
     private final List<Circle> corners = new ArrayList<>();
-    private final double HELD_BALL_OFFSET = 0.5;
     private final List<Gadget> actionObjects = new ArrayList<>();
     private Ball ejected = new Ball("", 10, 10, 0, 0);
+    private final double HELD_BALL_OFFSET = 0.5;
     
     // Abstract Function:
     //   AF(name, x, y, width, height, bottom, top, left, right, bottomLeft, bottomRight, topLeft, topRight,
-    //      edges, corners, holdBalls, prevBall) 
-    //     = Absorber with named name with upper left corner at (x, y), a width and a height,
+    //      edges, corners, holdBalls, actionObjects, ejected, HELD_BALL_OFFSET) 
+    //     = Absorber with a name with upper left corner at (x, y), a width and a height,
     //         edges represented by bottom, top, left, right and 
     //         corners represented by bottomLeft, bottomRight, topLeft, topRight,
     //         holdBalls list of balls being held in absorber,
-    //         prevBall maps to the previously ejected ball
+    //         actionObjects representing objects to be affected when absorber is triggered
+    //         ejected maps to the previously ejected ball, 
+    //         HELD_BALL_OFFSET is the offset in the x and y positions from the bottom right of the absorber
+    //           of balls held in the absorber
     // Rep Invariant:
-    //   name cannot be the name of other variables TODO how to check this
     //   x and y must be between 0 and 19
     //   width and height must be positive integer <= 20
     //   coordinates in bottom, top, left, right, bottomLeft, bottomRight, topLeft, and topRight 
@@ -47,6 +49,14 @@ class Absorber implements Gadget {
     // Safety from rep exposure:
     //   all fields private and final
     
+    /**
+     * Create an Absorber.
+     * @param name of the absorber
+     * @param x coord of the top left corner
+     * @param y coord of the top left corner
+     * @param width of the absorber
+     * @param height of the absorber
+     */
     public Absorber(String name, int x, int y, int width, int height) {
         this.name = name;
         this.x = x;
@@ -102,7 +112,7 @@ class Absorber implements Gadget {
         assert(topLeft.getCenter().equals(top.p1()) && topRight.getCenter().equals(top.p2()));
         assert(bottomLeft.getCenter().equals(left.p1()) && topLeft.getCenter().equals(left.p2()));
         assert(topRight.getCenter().equals(right.p1()) && bottomRight.getCenter().equals(right.p2()));
-        }
+    }
     
     @Override
     public String name() {
@@ -112,6 +122,7 @@ class Absorber implements Gadget {
     @Override
     public void addActionObject(Gadget actionObject) {
         actionObjects.add(actionObject);
+        checkRep();
     }
     
     @Override
@@ -196,7 +207,7 @@ class Absorber implements Gadget {
                 minCorner = time;
             }
         }
-        
+        checkRep();
         return Math.min(minEdge, minCorner);  
     }
     
@@ -231,7 +242,7 @@ class Absorber implements Gadget {
         } else {
             newVel = Physics.reflectWall(closestEdge, ball.getVelocity());
         }
-        
+        checkRep();
         return newVel;
     }
 
@@ -273,12 +284,16 @@ class Absorber implements Gadget {
                 ball.setVelocity(0, 0);
                 ball.setActive(false);
                 this.holdBalls.add(ball);
+                
                 for (Gadget actionObject: actionObjects) {
                     actionObject.action();
                 }
+                
+                checkRep();
                 return true;
             }
         }
+        checkRep();
         return false;   
         }
     
@@ -286,7 +301,6 @@ class Absorber implements Gadget {
     public void action() {
         // if there are balls to eject
         if (holdBalls.size() > 0) {
-            System.out.println(holdBalls);
             // if the ejected ball isn't the initialized ball OR
             // the ejected ball has left the absorber OR
             // the ejected ball is being held by the absorber again
@@ -295,17 +309,18 @@ class Absorber implements Gadget {
                 ejected = shoot;
                 shoot.setVelocity(0, -50);
                 shoot.setActive(true);
-                System.out.println("stored ball below shoot: \n" + shoot);
-                
-     
-                
+                checkRep();
                 return;
             }
         }
-        System.out.println("No stored balls");
-        
+        checkRep();
     }
     
+    /**
+     * Check if a ball is inside the absorber.
+     * @param ball to check location of
+     * @return true if ball is inside absorber and false otherwise
+     */
     private boolean checkInside(Ball ball) {
         // return true if ball is inside absorber
         // return false otherwise
@@ -331,5 +346,6 @@ class Absorber implements Gadget {
         int displayHeight = (int) Math.round(height*scaler);
         
         g.fillRect(displayX, displayY, displayWidth, displayHeight);
+        checkRep();
     }
 }

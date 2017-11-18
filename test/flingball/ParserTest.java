@@ -238,7 +238,6 @@ public class ParserTest {
             wordString = wordString + "\n" + fileWords.nextLine();
         }
         fileWords.close();
-        System.out.println(wordString);
         return wordString;
     }
     

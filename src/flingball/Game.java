@@ -183,26 +183,6 @@ public class Game {
     }
     
     /**
-     * Check for triggers at every frame of the Flingball Game.
-     */
-    public void checkTriggers() {
-        for (Gadget triggerObject : interactions.keySet()) {
-            for (Ball ball : balls.values()) {
-                if (ball.isActive()) {
-                    if (triggerObject.trigger(ball, TIMER_INTERVAL)) {
-                        
-                        Gadget actionObject = interactions.get(triggerObject);
-                        
-                        actionObject.action();
-                        System.out.println(triggerObject + " is triggered by " + actionObject);
-                    }
-                }
-            }
-        }
-        checkRep();
-    }
-    
-    /**
      * Calculates Ball positions and velocities at every timestep.
      */
     public void updateBalls() {

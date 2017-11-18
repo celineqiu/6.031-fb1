@@ -19,16 +19,24 @@ class CircleBumper implements Gadget {
     private final List<Gadget> actionObjects = new ArrayList<>();
     
     // Abstract Function:
-    //   AF(name, circle) = Circle bumper represented as a circle named name with 
-    //      upper left corner of bounding box at (x, y)   
+    //   AF(name, x, y, circle, actionObjects) = Circle bumper represented as a circle with a name, its 
+    //      upper left corner of bounding box at (x, y), and actionObjects representing objects to be affected
+    //      when the circle bumper is triggered,
+    //      actionObjects representing objects to be affected when absorber is triggered
     // Rep Invariant:
-    //   name cannot be the name of other variables
     //   x and y must be between 0 and 19
     //   center of the circle must be at (x+0.5, y+0.5)
     //   radius of the circle must be 0.5
+    //   actionObjects must be empty
     // Safety from rep exposure:
     //   all fields private and final
     
+    /**
+     * Create a Circle Bumper.
+     * @param name of the circle bumper
+     * @param x coord of the top left corner of the bounding box
+     * @param y coord of the top left corner of the bounding box
+     */
     public CircleBumper(String name, int x, int y) {
         this.name = name;
         this.x = x;
@@ -50,6 +58,7 @@ class CircleBumper implements Gadget {
     }
     
     /**
+     * Get the origin of the Circle Bumper bounding box.
      * @return origin of circle bumper bounding box
      */
     public Vect getOrigin() {
@@ -57,6 +66,7 @@ class CircleBumper implements Gadget {
     }
     
     /**
+     * Get the Circle object representing the cirlce bumper
      * @return circle representing circle bumper
      */
     public Circle getCircle() {
@@ -85,13 +95,11 @@ class CircleBumper implements Gadget {
         return Physics.timeUntilCircleCollision(this.circle, ball.getCircle(), ball.getVelocity());
     }
     
-    
    @Override
     public Vect velocityAfterCollision(Ball ball) {
         return Physics.reflectCircle(this.circle.getCenter(), ball.getCenter(), ball.getVelocity());
     }
 
-    
     @Override 
     public String toString() {
         String toStr = "name: " + this.name + "\n" +

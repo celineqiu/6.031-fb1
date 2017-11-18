@@ -23,13 +23,16 @@ class TriangleBumper implements Gadget {
     private final List<Gadget> actionObjects = new ArrayList<>();
     
     // Abstract Function:
-    //   AF(name, x, y, orientation, legA, legB, hypotenuse, cornerA, cornerB, rightAngleCorner) 
+    //   AF(name, x, y, orientation, legA, legB, hypotenuse, cornerA, cornerB, rightAngleCorner, legs, corners, actionObjects) 
     //     = Triangle bumper with named name with upper left corner of its bounding box at (x, y) 
     //       and with an orientation. The default orientation (0 degrees) places cornerA 
     //       in the northeast, rightAngleCorner in the northwest, and the cornerB in the southwest.
     //       legA is the side opposite of cornerA, legB is the side opposite of cornerB, 
     //         and hypotenuse, the longest side, is the side opposite of rightAngleCorner
-    //       The hypotenuse goes from the southwest corner to the northeast corner. 
+    //       The hypotenuse goes from the southwest corner to the northeast corner,
+    //      legs of the triangle, corners of the triangle,
+    //      and actionObjects representing objects to be affected
+    //      when the circle bumper is triggered
     // Rep Invariant:
     //   name cannot be the name of other variables
     //   x and y must be between 0 and 19
@@ -37,6 +40,7 @@ class TriangleBumper implements Gadget {
     //   legA, legB and hypotenuse form a right triangle
     //   legA is the side opposite of cornerA, legB is the side opposite of cornerB, 
     //     and hypotenuse, the longest side, is the side opposite of rightAngleCorner
+    //   actionObjects must be empty
     // Safety from rep exposure:
     //   all fields private and final
     
@@ -120,6 +124,7 @@ class TriangleBumper implements Gadget {
         assert(x >= 0 && x <= 19);
         assert(y >= 0 && y <= 19);
         assert(orientation == 0 || orientation == 90 || orientation == 180 || orientation == 270);
+        
         // form right triangle
         assert(hypotenuse.length()*hypotenuse.length() - legA.length()*legA.length() - legB.length()*legB.length()) <= 0.01 : "not a valid right triangle";
         assert(hypotenuse.p2().equals(legA.p1()));
@@ -150,6 +155,7 @@ class TriangleBumper implements Gadget {
     }
     
     /**
+     * Get the top left corner of the triangle bumper bounding box
      * @return origin of the triangle bumper bounding box
      */
     public Vect getOrigin() {
@@ -157,13 +163,15 @@ class TriangleBumper implements Gadget {
     }
     
     /**
-     * @return orientation of the triangle bumper
+     * Get the orientation of the triangle bumper
+     * @return orientation of the triangle bumper. 0, 90, 180, or 270
      */
     public int getOrientation() {
         return this.orientation;
     }
     
     /**
+     * Get the legs of the Triangle Bumper
      * @return list of the legs of the triangle bumper
      */
     public List<LineSegment> getLegs() {
@@ -175,6 +183,7 @@ class TriangleBumper implements Gadget {
     }
     
     /**
+     * Get the corners of the Triangle Bumper
      * @return list of the corners of the triangle bumper
      */
     public List<Circle> getCorners() {
@@ -204,6 +213,7 @@ class TriangleBumper implements Gadget {
                 minCorner = time;
             }
         }
+        checkRep();
         return Math.min(minLeg, minCorner);    
     }
     
@@ -238,7 +248,7 @@ class TriangleBumper implements Gadget {
         } else {
             newVel = Physics.reflectWall(closestLeg, ball.getVelocity());
         }
-        
+        checkRep();
         return newVel;
     }
     

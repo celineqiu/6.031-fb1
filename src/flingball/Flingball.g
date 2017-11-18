@@ -16,9 +16,8 @@
 	gravity::= 'gravity''=' FLOAT;
 	friction1::= 'friction1''=' FLOAT;
 	friction2::= 'friction2''=' FLOAT;
-	
-
 }
+
 whitespace ::= [ \t\n\r]+;
 INTEGER ::= [0-9]+;
 NAME ::= [A-Za-z_][A-Za-z_0-9]*;

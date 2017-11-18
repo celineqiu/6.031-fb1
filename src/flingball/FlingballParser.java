@@ -10,7 +10,6 @@ import java.util.Map;
 import edu.mit.eecs.parserlib.ParseTree;
 import edu.mit.eecs.parserlib.Parser;
 import edu.mit.eecs.parserlib.UnableToParseException;
-import edu.mit.eecs.parserlib.Visualizer;
 
 /**
  * Flingball Parser that parses a game file into a Flingball game.
@@ -23,15 +22,6 @@ public class FlingballParser {
      * @throws UnableToParseException if example expression can't be parsed
      */
     public static void main(final String[] args) throws UnableToParseException {
-        // Example input for parsing
-//        final String input = "#comment in the first line\n"
-//                + "board name=Example\n"
-//                + "squareBumper name=Square x=0 y=2\n"
-//                + "#this is comment\n"
-//                + "ball name=Ball x=1.8 y=4.5 xVelocity=-3.4 yVelocity=-2.3\n"
-//                + "triangleBumper name=Tri x=1 y=1 orientation=270\n"
-//                + "absorber name=Abs x=0 y=19 width=20 height=1 \n"
-//                + "fire trigger=Tri action=Abs"; 
         // default.fb
         final String input = "board name=Default gravity = 25.0\n" + 
                 "\n" + 
@@ -51,11 +41,11 @@ public class FlingballParser {
                 "\n" + 
                 "# define a triangle bumper\n" + 
                 "triangleBumper name=Tri x=12 y=15 orientation=180";
-        System.out.println("INPUT: " + input);
         
         FlingballParser.parse(input);
     }
     
+    // non-terminals of the Flingball grammar
     private enum FlingballGrammar {
         GAME, BOARD, GADGET, INTERACTION,
         SQUARE, CIRCLE, TRIANGLE, ABSORBER, BALL, 
@@ -67,7 +57,6 @@ public class FlingballParser {
     
     /**
      * Compile the grammar into a parser.
-     * 
      * @param grammarFilename <b>Must be in this class's Java package.</b>
      * @return parser for the grammar
      * @throws RuntimeException if grammar file can't be read or has syntax errors
@@ -98,12 +87,7 @@ public class FlingballParser {
      */
     public static Game parse(final String string) throws UnableToParseException {
         final ParseTree<FlingballGrammar> parseTree = parser.parse(string);
-        //System.out.println("parse tree " + parseTree);
-
-       // Visualizer.showInBrowser(parseTree);
-
         final Game game = makeGameAST(parseTree);
-        System.out.println("AST " + game);
         return game;
     }
     
@@ -175,9 +159,6 @@ public class FlingballParser {
                     case INTERACTION:
                     {
                         // handle interaction between two objects
-                        System.out.println("NAME: "+child.name());
-                        System.out.println("SIZE: "+child.children().size());
-                        System.out.println("FIRST CHILD: "+child.children().get(0).name());
                         String triggerName = child.children().get(0).text();
                         String actionName = child.children().get(1).text(); 
                         interactions.put(triggerName, actionName);
@@ -193,8 +174,6 @@ public class FlingballParser {
 
         default:
             {
-                System.out.println(parseTree.name());
-                System.out.println(parseTree.text());
                 throw new AssertionError("should never get here");
             }
         }
@@ -202,7 +181,7 @@ public class FlingballParser {
     }
 
     /**
-     * make a Abstract syntax tree for Gadgets
+     * Make a Abstract syntax tree for Gadgets
      * @param parseTree constructed according to the grammar in FlingballExpression.g
      * @return abstract syntax tree corresponding to parseTree
      */
@@ -259,7 +238,7 @@ public class FlingballParser {
     }
     
     /**
-     * make a Abstract syntax tree for Ball class
+     * Make a Abstract syntax tree for Ball class
      * @param parseTree constructed according to the grammar in FlingballExpression.g
      * @return abstract syntax tree corresponding to parseTree
      */

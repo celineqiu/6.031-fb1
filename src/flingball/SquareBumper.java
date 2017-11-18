@@ -23,10 +23,12 @@ class SquareBumper implements Gadget {
     private final List<Gadget> actionObjects = new ArrayList<>();
     
     // Abstract Function:
-    //   AF(name, x, y, bottom, top, left, right, bottomLeft, bottomRight, topLeft, topRight, edges, corner) 
+    //   AF(name, x, y, bottom, top, left, right, bottomLeft, bottomRight, topLeft, topRight, edges, corners, actionObjects) 
     //     = Square bumper named name with upper left corner at (x, y),
     //       list of edges represented by bottom, top, left, right and 
-    //       list of corners represented by bottomLeft, bottomRight, topLeft, topRight
+    //       list of corners represented by bottomLeft, bottomRight, topLeft, topRight,
+    //       and actionObjects representing objects to be affected
+    //       when the circle bumper is triggered
     // Rep Invariant:
     //   name cannot be the name of other variables
     //   x and y must be between 0 and 19
@@ -36,6 +38,7 @@ class SquareBumper implements Gadget {
     //   bottomLeft and topLeft must be endpoints of left
     //   topLeft and topRight must be endpoints of top
     //   topRight and bottomRight must be endpoints of right
+    //   actionObjects must be empty
     // Safety from rep exposure:
     //   all fields private and final
     
@@ -91,7 +94,8 @@ class SquareBumper implements Gadget {
         assert(topLeft.getCenter().equals(top.p1()) && topRight.getCenter().equals(top.p2())) : "edge point and corner not consistent, top";
         assert(bottomLeft.getCenter().equals(left.p1()) && topLeft.getCenter().equals(left.p2())) : "edge point and corner not consistent, left";
         assert(topRight.getCenter().equals(right.p1()) && bottomRight.getCenter().equals(right.p2())) : "edge point and corner not consistent, right";
-        
+        // actionObjects must be empty
+        assert actionObjects.isEmpty();
     }
        
     @Override
@@ -100,6 +104,7 @@ class SquareBumper implements Gadget {
     }
     
     /**
+     * Get the origin of the top left corner of the bounding box
      * @return origin of square bumper bounding box
      */
     public Vect getOrigin() {
@@ -107,6 +112,7 @@ class SquareBumper implements Gadget {
     }
     
     /**
+     * Get the edges of the Square Bumper
      * @return list of edges of the square bumper
      */
     public List<LineSegment> getEdges() {
@@ -119,6 +125,7 @@ class SquareBumper implements Gadget {
     }
     
     /**
+     * Get the corners of the Square Bumper
      * @return list of corners of the square bumper
      */
     public List<Circle> getCorners() {

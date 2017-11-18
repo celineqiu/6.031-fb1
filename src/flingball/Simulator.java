@@ -7,8 +7,6 @@ import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -25,10 +23,17 @@ public class Simulator {
     private final int TIMER_INTERVAL_MILLISECONDS = 50; // for ~20 frames per second
     private final Game game;
     
+    /**
+     * Create a Flingball game simulator.
+     * @param game to simulate
+     */
     public Simulator(Game game) {
         this.game = game;
     }
     
+    /**
+     * Draw the Flingball game.
+     */
     public void draw() {
         final JFrame window = new JFrame("flingball");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
