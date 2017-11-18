@@ -16,6 +16,14 @@ import javax.swing.Timer;
  * Simulator draws the game board and animates the movement of the balls.
  */
 public class Simulator {
+    // Abstraction Function:
+    //   AF(GAMEBOARD_SIZE, PIXELS_PER_L, DRAWING_AREA_SIZE_IN_PIXELS, TIMER_INTERVAL_MILLISECONDS, game) = 
+    //      simulator that simulates the running game flingball game of size GAMEBOARD_SIZE and displays it with resolution PIXELS_PER_L
+    //      in new window of DRAWING_AREA_SIZE_IN_PIXELS and updates object positions every TIMER_INTERVAL_MILLISECONDS milliseconds
+    // Rep Invariant:
+    //      true
+    // Safety from rep exposure:
+    //   all fields private and final
     private final int GAMEBOARD_SIZE = 20;
     private final int PIXELS_PER_L = 20;
     private final int DRAWING_AREA_SIZE_IN_PIXELS = GAMEBOARD_SIZE * PIXELS_PER_L;
@@ -29,6 +37,11 @@ public class Simulator {
      */
     public Simulator(Game game) {
         this.game = game;
+        checkRep();
+    }
+    
+    private void checkRep() {
+        assert true;
     }
     
     /**
