@@ -279,26 +279,237 @@ public class GadgetTest {
         assertFalse("expected not triggered", circle.trigger(ball, 1));
     }
     
-    // SquareBumper
-    
+    // covers Square
+    //     all general methods of gadget
+    //     specific methods of Square
+    //       getOrigin
+    //       getEdges
+    //       getCorners
     @Test
-    public void testToStringSquareBumper() {
-        String expected = "name: square" + "\n" +
-                          "top left: (1,1)," + "\n" +
-                          "top right: (2,1)," + "\n" +
-                          "bottom right: (2,2)," + "\n" +
-                          "bottom left: (1,2)";
-        SquareBumper square = new SquareBumper("square", 1, 1);
-        assertEquals("expected same string", expected, square.toString());
+    public void testSquare() {
+        final int X = 1;
+        final int Y = 2;
+        
+        SquareBumper square = new SquareBumper("square", X, Y);
+        
+        // define edges and corners
+        List<LineSegment> expectedEdges = new ArrayList<>();
+        LineSegment bottom = new LineSegment(X+1, Y+1, X, Y+1);
+        LineSegment top = new LineSegment(X, Y, X+1, Y);
+        LineSegment left = new LineSegment(X, Y+1, X, Y);
+        LineSegment right = new LineSegment(X+1, Y, X+1, Y+1);
+        expectedEdges.add(bottom);
+        expectedEdges.add(top);
+        expectedEdges.add(left);
+        expectedEdges.add(right);
+        
+        List<Circle> expectedCorners = new ArrayList<>();
+        Circle bottomLeft = new Circle(X, Y+1, 0);
+        Circle bottomRight = new Circle(X+1, Y+1, 0);
+        Circle topLeft = new Circle(X, Y, 0);
+        Circle topRight = new Circle(X+1, Y, 0);
+        expectedCorners.add(bottomLeft);
+        expectedCorners.add(bottomRight);
+        expectedCorners.add(topLeft);
+        expectedCorners.add(topRight);
+        
+        Ball ball = new Ball("ball", 1, 1, 5, 5);
+        
+        // name
+        assertEquals("expected correct name", "square", square.name());
+        
+        // timeUntilCollision
+        LineSegment closestEdge = new LineSegment(0, 0, 1, 1);
+        Circle closestCorner = new Circle(0, 0, 0);
+        Double minEdge = Double.MAX_VALUE;
+        Double minCorner = Double.MAX_VALUE;
+        
+        // find closest edge and corner
+        for (LineSegment edge : expectedEdges) {
+            Double time = Physics.timeUntilWallCollision(edge, ball.getCircle(), ball.getVelocity());
+            if (time < minEdge) {
+                minEdge = time;
+                closestEdge = edge;
+            }
+        }
+        for (Circle corner : expectedCorners) {
+            Double time = Physics.timeUntilCircleCollision(corner, ball.getCircle(), ball.getVelocity());
+            if (time < minCorner) {
+                minCorner = time;
+                closestCorner = corner;
+            }
+        }
+        Double expectedTimeUntilCollision = Math.min(minEdge, minCorner);
+        assertEquals("expected correct time until collision", expectedTimeUntilCollision, square.timeUntilCollision(ball));
+        
+        // velocityAfterCollision 
+        // find closest object & post collision velocity
+        Vect expectedNewVel;
+        if (minCorner <= minEdge) {
+            expectedNewVel = Physics.reflectCircle(closestCorner.getCenter(), ball.getCenter(), ball.getVelocity());
+        } else {
+            expectedNewVel = Physics.reflectWall(closestEdge, ball.getVelocity());
+        }
+        assertEquals("expected same new velocity after collision", expectedNewVel, square.velocityAfterCollision(ball));
+        
+        // trigger
+        assertFalse("expected no trigger", square.trigger(ball, 50*0.0001));
+        
+        // copy
+        SquareBumper squareCopy = square.copy();
+        assertEquals("expected same origin", square.getOrigin(), squareCopy.getOrigin());
+        assertEquals("expected same edges", square.getEdges(), squareCopy.getEdges());
+        assertEquals("expected same corners", square.getCorners(), squareCopy.getCorners());
+        
+        // toString
+        String expectedString = "name: square" + "\n" +
+                "top left: (1,2)," + "\n" +
+                "top right: (2,2)," + "\n" +
+                "bottom right: (2,3)," + "\n" +
+                "bottom left: (1,3)";
+        assertEquals("expected same string", expectedString, square.toString());
+        
+        // equals
+        SquareBumper squareSame = new SquareBumper("square", X, Y);
+        assertEquals("expected same squares to be equal", squareSame, square);
+        assertEquals("expected copies to be equal", squareCopy, square);
+        assertEquals("expected symmetric equality", square, square);
+        
+        // hashCode
+        int expectedHashCode = square.name().hashCode() + (int)square.getOrigin().x() + (int)square.getOrigin().y() + expectedEdges.hashCode() + expectedCorners.hashCode();
+        assertEquals("expected correct hashCode", expectedHashCode, square.hashCode());
+        
+        // addActionObject, getActionObjects
+        square.addActionObject(squareCopy);
+        assertTrue("expected added action object to be in actionObjects", square.getActionObjects().contains(squareCopy));
+        
+        // getOrigin
+        assertEquals("expected correct origin", new Vect(X, Y), square.getOrigin());
+        
+        // getEdges
+        assertEquals("expected same edges", expectedEdges, square.getEdges());
+        
+        // getCorners
+        assertEquals("expected same corners", expectedCorners, square.getCorners());
     }
     
+    // covers Square
+    //     all general methods of gadget
+    //     specific methods of Square
+    //       getOrigin
+    //       getOrientation
+    //       getLegs
+    //       getCorners
     @Test
-    public void testToStringTriangleBumper() {
-        String expected = "name: triangle" + "\n" +
-                          "origin: (5,5)" + "\n" +
-                          "orientation: 180";
-        TriangleBumper triangle = new TriangleBumper("triangle", 5, 5, 180);
-        assertEquals("expected same string", expected, triangle.toString());
+    public void testTriangle() {
+        final int X = 1;
+        final int Y = 2;
+        final int ORIENTATION = 180;
+        
+        TriangleBumper triangle = new TriangleBumper("triangle", X, Y, ORIENTATION);
+        
+        // define edges and corners
+        List<LineSegment> expectedEdges = new ArrayList<>();
+        List<Circle> expectedCorners = new ArrayList<>();
+        
+        // triangles legs drawn counterclockwise
+        Vect p1 = new Vect(X, Y+1);
+        Vect p2 = new Vect(X+1, Y+1);
+        Vect p3 = new Vect(X+1, Y);
+ 
+        Circle rightAngleCorner = new Circle(p2, 0);
+        Circle cornerA = new Circle(p3, 0);
+        Circle cornerB = new Circle(p1, 0);
+        expectedCorners.add(rightAngleCorner);
+        expectedCorners.add(cornerA);
+        expectedCorners.add(cornerB);
+        
+        LineSegment legA = new LineSegment(p1, p2);
+        LineSegment legB = new LineSegment(p2, p3);
+        LineSegment hypotenuse = new LineSegment(p3, p1);
+        expectedEdges.add(legA);
+        expectedEdges.add(legB);
+        expectedEdges.add(hypotenuse);
+        
+        Ball ball = new Ball("ball", 1, 1, 5, 5);
+        
+        // name
+        assertEquals("expected correct name", "triangle", triangle.name());
+        
+        // timeUntilCollision
+        LineSegment closestEdge = new LineSegment(0, 0, 1, 1);
+        Circle closestCorner = new Circle(0, 0, 0);
+        Double minEdge = Double.MAX_VALUE;
+        Double minCorner = Double.MAX_VALUE;
+        
+        // find closest edge and corner
+        for (LineSegment edge : expectedEdges) {
+            Double time = Physics.timeUntilWallCollision(edge, ball.getCircle(), ball.getVelocity());
+            if (time < minEdge) {
+                minEdge = time;
+                closestEdge = edge;
+            }
+        }
+        for (Circle corner : expectedCorners) {
+            Double time = Physics.timeUntilCircleCollision(corner, ball.getCircle(), ball.getVelocity());
+            if (time < minCorner) {
+                minCorner = time;
+                closestCorner = corner;
+            }
+        }
+        Double expectedTimeUntilCollision = Math.min(minEdge, minCorner);
+        assertEquals("expected correct time until collision", expectedTimeUntilCollision, triangle.timeUntilCollision(ball));
+        
+        // velocityAfterCollision 
+        // find closest object & post collision velocity
+        Vect expectedNewVel;
+        if (minCorner <= minEdge) {
+            expectedNewVel = Physics.reflectCircle(closestCorner.getCenter(), ball.getCenter(), ball.getVelocity());
+        } else {
+            expectedNewVel = Physics.reflectWall(closestEdge, ball.getVelocity());
+        }
+        assertEquals("expected same new velocity after collision", expectedNewVel, triangle.velocityAfterCollision(ball));
+        
+        // trigger
+        assertFalse("expected no trigger", triangle.trigger(ball, 50*0.0001));
+        
+        // copy
+        TriangleBumper triangleCopy = triangle.copy();
+        assertEquals("expected same origin", triangle.getOrigin(), triangleCopy.getOrigin());
+        assertEquals("expected same edges", triangle.getLegs(), triangleCopy.getLegs());
+        assertEquals("expected same corners", triangle.getCorners(), triangleCopy.getCorners());
+        
+        // toString
+        String expectedTriangle = "name: triangle" + "\n" +
+                "origin: (1,2)" + "\n" +
+                "orientation: 180";
+        assertEquals("expected same string", expectedTriangle, triangle.toString());
+        
+        // equals
+        TriangleBumper triangleSame = new TriangleBumper("triangle", X, Y, ORIENTATION);
+        assertEquals("expected same triangles to be equal", triangleSame, triangle);
+        assertEquals("expected copies to be equal", triangleCopy, triangle);
+        assertEquals("expected symmetric equality", triangle, triangle);
+        
+        // hashCode
+        int expectedHashCode = triangle.name().hashCode() + (int)triangle.getOrigin().x() + (int)triangle.getOrigin().y() + ORIENTATION;
+        assertEquals("expected correct hashCode", expectedHashCode, triangle.hashCode());
+        
+        // addActionObject, getActionObjects
+        triangle.addActionObject(triangleCopy);
+        assertTrue("expected added action object to be in actionObjects", triangle.getActionObjects().contains(triangleCopy));
+        
+        // getOrigin
+        assertEquals("expected correct origin", new Vect(X, Y), triangle.getOrigin());
+        
+        // getOrientation
+        assertEquals("expected correct orientation", ORIENTATION, triangle.getOrientation());
+        
+        // getEdges
+        assertEquals("expected same edges", expectedEdges, triangle.getLegs());
+        
+        // getCorners
+        assertEquals("expected same corners", expectedCorners, triangle.getCorners());
     }
     
     // covers Wall

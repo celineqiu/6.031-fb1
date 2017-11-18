@@ -5,9 +5,6 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.accessibility.AccessibleState;
-import javax.xml.soap.Detail;
-
 import physics.Circle;
 import physics.LineSegment;
 import physics.Physics;
@@ -182,9 +179,9 @@ class TriangleBumper implements Gadget {
      */
     public List<Circle> getCorners() {
         List<Circle> cornersCopy = new ArrayList<>();
+        cornersCopy.add(new Circle(rightAngleCorner.getCenter(), rightAngleCorner.getRadius()));
         cornersCopy.add(new Circle(cornerA.getCenter(), cornerA.getRadius()));
         cornersCopy.add(new Circle(cornerB.getCenter(), cornerB.getRadius()));
-        cornersCopy.add(new Circle(rightAngleCorner.getCenter(), rightAngleCorner.getRadius()));
         return cornersCopy;
     }
     
