@@ -21,6 +21,13 @@ class TriangleBumper implements Gadget {
     private final List<LineSegment> legs = new ArrayList<>();
     private final List<Circle> corners = new ArrayList<>();
     private final List<Gadget> actionObjects = new ArrayList<>();
+    private static final int ROTATE_90 = 90;
+    private static final int ROTATE_180 = 180;
+    private static final int ROTATE_270 = 270;
+    private static final int MAX_COORD = 19;
+    private static final double MAX_ERROR = 0.01;
+    private static final int NUM_POINTS = 3;
+    
     
     // Abstract Function:
     //   AF(name, x, y, orientation, legA, legB, hypotenuse, cornerA, cornerB, rightAngleCorner, legs, corners, actionObjects) 
@@ -84,15 +91,15 @@ class TriangleBumper implements Gadget {
             p1 = new Vect(x+1, y);
             p2 = new Vect(x, y);
             p3 = new Vect(x, y+1);
-        } else if (orientation == 90) {
+        } else if (orientation == ROTATE_90) {
             p1 = new Vect(x+1, y+1);
             p2 = new Vect(x+1, y);
             p3 = new Vect(x, y);
-        } else if (orientation == 180) {
+        } else if (orientation == ROTATE_180) {
             p1 = new Vect(x, y+1);
             p2 = new Vect(x+1, y+1);
             p3 = new Vect(x+1, y);
-        } else if (orientation == 270) {
+        } else if (orientation == ROTATE_270) {
             p1 = new Vect(x, y);
             p2 = new Vect(x, y+1);
             p3 = new Vect(x+1, y+1);
@@ -121,12 +128,12 @@ class TriangleBumper implements Gadget {
      * Check that the rep invariant is satisfied.
      */
     private void checkRep() {
-        assert(x >= 0 && x <= 19);
-        assert(y >= 0 && y <= 19);
-        assert(orientation == 0 || orientation == 90 || orientation == 180 || orientation == 270);
+        assert(x >= 0 && x <= MAX_COORD);
+        assert(y >= 0 && y <= MAX_COORD);
+        assert(orientation == 0 || orientation == ROTATE_90 || orientation == ROTATE_180 || orientation == ROTATE_270);
         
         // form right triangle
-        assert(hypotenuse.length()*hypotenuse.length() - legA.length()*legA.length() - legB.length()*legB.length()) <= 0.01 : "not a valid right triangle";
+        assert(hypotenuse.length()*hypotenuse.length() - legA.length()*legA.length() - legB.length()*legB.length()) <= MAX_ERROR : "not a valid right triangle";
         assert(hypotenuse.p2().equals(legA.p1()));
         assert(legA.p2().equals(legB.p1()));
         assert(legB.p2().equals(hypotenuse.p1()));
@@ -329,7 +336,7 @@ class TriangleBumper implements Gadget {
                 (int) Math.round(rightAngleCorner.getCenter().y()*scaler)                   
         };
         
-        final int nPoints = 3;
+        final int nPoints = NUM_POINTS;
         
         g.fillPolygon(xValues, yValues, nPoints);
     }   

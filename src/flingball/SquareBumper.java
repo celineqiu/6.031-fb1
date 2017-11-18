@@ -21,6 +21,8 @@ class SquareBumper implements Gadget {
     private final List<LineSegment> edges = new ArrayList<>();
     private final List<Circle> corners = new ArrayList<>();
     private final List<Gadget> actionObjects = new ArrayList<>();
+    private static final int MAX_COORD = 19;
+    private static final int LENGTH = 20;
     
     // Abstract Function:
     //   AF(name, x, y, bottom, top, left, right, bottomLeft, bottomRight, topLeft, topRight, edges, corners, actionObjects) 
@@ -72,22 +74,22 @@ class SquareBumper implements Gadget {
      * Check that the rep invariant is satisfied.
      */
     private void checkRep() {
-        assert(x >= 0 && x <= 19);
-        assert(y >= 0 && y <= 19);
+        assert(x >= 0 && x <= MAX_COORD);
+        assert(y >= 0 && y <= MAX_COORD);
         
         for (LineSegment edge : edges) {
             Vect p1 = edge.p1();
             Vect p2 = edge.p2();
-            assert(p1.x() >= 0 && p1.x() <= 20) : "edge point p1.x out of range, value is "+ p1.x();
-            assert(p1.y() >= 0 && p1.y() <= 20) : "edge point p1.y out of range, value is "+ p1.y();
-            assert(p2.x() >= 0 && p2.x() <= 20) : "edge point p2.x out of range, value is "+ p2.x();
-            assert(p2.y() >= 0 && p2.y() <= 20) : "edge point p2.y out of range, value is "+ p2.y();
+            assert(p1.x() >= 0 && p1.x() <= LENGTH) : "edge point p1.x out of range, value is "+ p1.x();
+            assert(p1.y() >= 0 && p1.y() <= LENGTH) : "edge point p1.y out of range, value is "+ p1.y();
+            assert(p2.x() >= 0 && p2.x() <= LENGTH) : "edge point p2.x out of range, value is "+ p2.x();
+            assert(p2.y() >= 0 && p2.y() <= LENGTH) : "edge point p2.y out of range, value is "+ p2.y();
         }
         
         for (Circle corner : corners) {
             Vect center = corner.getCenter();
-            assert(center.x() >= 0 && center.x() <= 20) : "center of corner out of bound (x), value is " + center.x();
-            assert(center.y() >= 0 && center.y() <= 20) : "center of corner out of bound (y), value is " + center.y();
+            assert(center.x() >= 0 && center.x() <= LENGTH) : "center of corner out of bound (x), value is " + center.x();
+            assert(center.y() >= 0 && center.y() <= LENGTH) : "center of corner out of bound (y), value is " + center.y();
         }
         
         assert(bottomRight.getCenter().equals(bottom.p1()) && bottomLeft.getCenter().equals(bottom.p2())) : "edge point and corner not consistent, bottom";
